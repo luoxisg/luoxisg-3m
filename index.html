@@ -232,9 +232,9 @@
             <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
               <div className="max-w-[1440px] mx-auto h-[72px] px-4 md:px-8 flex items-center justify-between">
                 <div className="flex items-center gap-8 h-full">
-                  {/* Logo - Red Box */}
-                  <div className="bg-[#FF0000] text-white w-[72px] h-[72px] -ml-4 md:ml-0 flex items-center justify-center font-black text-2xl tracking-tighter shrink-0 cursor-pointer">
-                    DCDT
+                  {/* Logo - Replaced Red Box with DCDeepTech Logo */}
+                  <div className="h-full flex items-center -ml-4 md:ml-0 cursor-pointer">
+                    <img src="image/DCdeeptech_logo.png" alt="DCDeepTech" className="h-12 w-auto object-contain" />
                   </div>
                   
                   {/* Desktop Navigation */}
@@ -274,7 +274,7 @@
             {isMenuOpen && (
               <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
                  <div className="flex justify-between items-center p-4 border-b border-gray-100">
-                    <div className="font-black text-2xl text-[#FF0000]">DCDT</div>
+                    <img src="image/DCdeeptech_logo.png" alt="DCDT" className="h-8 w-auto" />
                     <button onClick={() => setIsMenuOpen(false)}>
                        <XIcon className="w-8 h-8 text-[#333333]" />
                     </button>
@@ -313,7 +313,10 @@
                     </p>
                     
                     <div className="flex flex-wrap gap-4">
-                       <button className="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md">
+                       <button 
+                         onClick={() => window.open('document/DCDT OCP vs 3M white paper.pdf', '_blank')}
+                         className="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md"
+                       >
                           {isZH ? "下载白皮书" : "Download Whitepaper"}
                           <DownloadIcon className="w-4 h-4" />
                        </button>
@@ -324,13 +327,13 @@
                     </div>
                  </div>
 
-                 {/* Hero Graphic Area */}
+                 {/* Hero Graphic Area - Mapped to image/strucature.png */}
                  <div className="relative h-64 md:h-auto bg-gray-300 overflow-hidden">
                      {/* Diagonal divider */}
                      <div className="absolute top-0 bottom-0 -left-16 w-32 bg-[#f2f2f2] -skew-x-12 z-10 hidden md:block border-r-4 border-white"></div>
                      
                      <img 
-                       src="./image/ocp-orv3-architecture.png" 
+                       src="image/strucature.png" 
                        alt="OCP ORv3 Architecture"
                        className="w-full h-full object-cover mix-blend-multiply opacity-80"
                        onError={(e) => {
@@ -515,7 +518,7 @@
                </div>
             </section>
 
-            {/* Video Section - Updated Title */}
+            {/* Video Section - Updated Title and Source */}
             <section id="showcase" className="bg-[#f2f2f2] py-24">
                <div className="max-w-[1440px] mx-auto px-6 md:px-12">
                   <div className="flex items-center justify-between mb-10">
@@ -531,7 +534,7 @@
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-8">
-                     {/* Video 1 */}
+                     {/* Video 1 - Mapped to video/3M_OCP_ORv3_Integration.mp4 */}
                      <div className="bg-white p-4 shadow-sm group">
                         <div className="relative aspect-video bg-black mb-4 overflow-hidden">
                            <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
@@ -539,7 +542,7 @@
                                  <PlayIcon className="w-6 h-6 text-[#FF0000] ml-1 fill-[#FF0000]" />
                               </div>
                            </div>
-                           <video src="./video/dcdt-orv3-overview.mp4" className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" controls />
+                           <video src="video/3M_OCP_ORv3_Integration.mp4" className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" controls />
                         </div>
                         <h3 className="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
                            {isZH ? "项目总览 / 创始人路演" : "Project Overview / Founder Pitch"}
@@ -549,7 +552,7 @@
                         </p>
                      </div>
 
-                     {/* Video 2 */}
+                     {/* Video 2 - Mapped to same video for demo purposes, or keep placeholders if preferred. Using valid video file. */}
                      <div className="bg-white p-4 shadow-sm group">
                         <div className="relative aspect-video bg-black mb-4 overflow-hidden">
                            <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
@@ -557,7 +560,7 @@
                                  <PlayIcon className="w-6 h-6 text-[#FF0000] ml-1 fill-[#FF0000]" />
                               </div>
                            </div>
-                           <video src="./video/3m-twinax-ebo-demo.mp4" className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" controls />
+                           <video src="video/3M_OCP_ORv3_Integration.mp4" className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" controls />
                         </div>
                         <h3 className="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
                            {isZH ? "互连与布线实拍" : "Interconnect & Cabling Demo"}
@@ -570,16 +573,16 @@
                </div>
             </section>
 
-            {/* Image Showcase */}
+            {/* Image Showcase - Mapped to real files */}
             <section className="py-24 max-w-[1440px] mx-auto px-6 md:px-12">
                <h2 className="text-2xl font-bold text-[#333333] mb-8">
                   {isZH ? "图像展示 (./image)" : "Image Showcase"}
                </h2>
                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {[
-                     { src: "./image/orv3-rack-front.png", text: isZH ? "ORv3 机柜正视图" : "ORv3 Rack Front View" },
-                     { src: "./image/busbar-rear.png", text: isZH ? "48V 母排与 BB1000" : "48V Busbar + BB1000" },
-                     { src: "./image/3m-ebo-module.png", text: isZH ? "3M EBO 光模块" : "3M EBO Optical Module" }
+                     { src: "image/Nvidia.png", text: isZH ? "ORv3 机柜正视图" : "ORv3 Rack Front View" },
+                     { src: "image/Twinax.png", text: isZH ? "48V 母排与 BB1000" : "48V Busbar + BB1000" },
+                     { src: "image/EBO.png", text: isZH ? "3M EBO 光模块" : "3M EBO Optical Module" }
                   ].map((img, i) => (
                      <div key={i} className="group relative aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200">
                         <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">
@@ -588,7 +591,7 @@
                         <img 
                            src={img.src}
                            alt={img.text}
-                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                           className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110" 
                            onError={(e) => e.currentTarget.style.opacity = '0'}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">

@@ -538,51 +538,67 @@
               </div>
             )}
 
-            {/* Hero */}
-            <section className="bg-[#f2f2f2] relative overflow-hidden">
-              <div className="max-w-[1440px] mx-auto grid md:grid-cols-2 min-h-[560px]">
-                <div className="flex flex-col justify-center px-6 md:px-12 py-16 md:py-24 z-10">
-                  <div className="w-0 h-0 border-l-[12px] border-l-transparent border-t-[18px] border-t-[#FF0000] border-r-[12px] border-r-transparent mb-6"></div>
+           <!-- Hero Section -->
+<section class="relative bg-[#f2f2f2] overflow-hidden">
+  <div class="max-w-[1440px] mx-auto grid md:grid-cols-2 min-h-[560px]">
+    
+    <!-- Left Content -->
+    <div class="flex flex-col justify-center px-6 md:px-12 py-16 md:py-24 z-10">
+      <div class="w-0 h-0 border-l-[12px] border-l-transparent border-t-[18px] border-t-[#FF0000] border-r-[12px] border-r-transparent mb-6"></div>
+      <h1 class="text-4xl lg:text-5xl font-bold leading-tight text-[#333333] mb-6 tracking-tight">
+        面向 AI 时代的 OCP ORv3 高密度基础设施技术合作路线
+      </h1>
+      <p class="text-lg text-gray-600 max-w-xl leading-relaxed mb-8 font-light">
+        基于《DCDeepTech OCP ORv3 基础设施深度技术整合报告》，梳理 DCDT 与生态伙伴的联合方案。
+      </p>
 
-                  <h1 className="text-4xl lg:text-5xl font-bold leading-tight text-[#333333] mb-6 tracking-tight">
-                    {isZH
-                      ? "面向 AI 时代的 OCP ORv3 高密度基础设施技术合作路线"
-                      : "OCP ORv3 High-Density Infrastructure Roadmap for the AI Era"}
-                  </h1>
-                  <p className="text-lg text-gray-600 max-w-xl leading-relaxed mb-8 font-light">
-                    {isZH
-                      ? "基于《DCDeepTech OCP ORv3 基础设施深度技术整合报告》，梳理 DCDT 与生态伙伴在机柜、供电与 3M EBO / TwinAx 互连上的联合合作路线。"
-                      : 'Based on the "DCDeepTech OCP ORv3 Infrastructure Deep Integration Report", we outline how DCDT and partners co-develop cabinet, power and 3M EBO / TwinAx interconnect solutions.'}
-                  </p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/document/DCDT_whitepaper.pdf"
+          target="_blank"
+          class="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md"
+        >
+          下载白皮书
+        </a>
 
-                  <div className="flex flex-wrap gap-4">
-                    <a
-                      href={`./document/DCDT%20OCP%20vs%203M%20white%20paper.pdf`}
-                      target="_blank"
-                      download="DCDT_OCP_vs_3M_white_paper.pdf"
-                      className="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md cursor-pointer decoration-0"
-                    >
-                      {isZH ? "下载白皮书" : "Download Whitepaper"}
-                      <DownloadIcon className="w-4 h-4" />
-                    </a>
-                    <button className="group bg-transparent border-2 border-[#333333] text-[#333333] hover:bg-[#333333] hover:text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all">
-                      {isZH ? "预约技术对接" : "Contact Sales"}
-                      <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  </div>
-                </div>
+        <button class="border-2 border-[#333333] text-[#333333] hover:bg-[#333333] hover:text-white px-8 py-3 rounded-md font-bold text-[15px] transition-all">
+          预约技术对接
+        </button>
+      </div>
+    </div>
 
-                {/* Hero image: use Nvidia.png, fill area */}
-                <div className="relative h-64 md:h-auto bg-gray-300 overflow-hidden">
-                  <div className="absolute top-0 bottom-0 -left-16 w-32 bg-[#f2f2f2] -skew-x-12 z-10 hidden md:block border-r-4 border-white"></div>
-                  <img
-                    src={`./image/Nvidia.png`}
-                    alt="NVIDIA / ORv3 High Density"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-            </section>
+    <!-- Right Hero Image -->
+    <div class="relative h-[560px] md:h-auto overflow-hidden">
+
+      <!-- 动画：缓慢缩放 + 淡入 -->
+      <img 
+        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Nvidia.png"
+        alt="Hero"
+        class="absolute inset-0 w-full h-full object-cover opacity-0 animate-heroFade zoom-slow"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- 动画样式 -->
+<style>
+  @keyframes heroFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-heroFade {
+    animation: heroFade 1.5s ease-out forwards;
+  }
+
+  @keyframes zoomSlow {
+    from { transform: scale(1.05); }
+    to { transform: scale(1); }
+  }
+  .zoom-slow {
+    animation: zoomSlow 10s ease-out forwards;
+  }
+</style>
+   
 
             {/* Value Proposition */}
             <section

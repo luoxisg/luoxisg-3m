@@ -34,6 +34,7 @@
         -webkit-font-smoothing: antialiased;
       }
 
+      /* 3M Red Utility */
       .bg-3m-red {
         background-color: #ff0000;
       }
@@ -47,10 +48,12 @@
         background-color: #ff0000;
       }
 
+      /* Smooth Scrolling */
       html {
         scroll-behavior: smooth;
       }
 
+      /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -64,6 +67,7 @@
         background: #555;
       }
 
+      /* Modal Animation */
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -88,6 +92,19 @@
       .animate-slide-up {
         animation: slideUp 0.3s ease-out forwards;
       }
+
+      /* Hero image轻微漂浮动画，整图展示 */
+      @keyframes heroFloat {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-8px);
+        }
+      }
+      .hero-image {
+        animation: heroFloat 6s ease-in-out infinite alternate;
+      }
     </style>
   </head>
   <body class="bg-white">
@@ -96,11 +113,7 @@
     <script type="text/babel">
       const { useState, useEffect } = React;
 
-      // Base URL for GitHub Raw Content
-      const REPO_URL =
-        "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main";
-
-      // --- Icons Components ---
+      // --- Icons Components (简单 SVG) ---
       const Icon = ({ children, className, ...props }) => (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -183,12 +196,6 @@
           <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
         </Icon>
       );
-      const CheckCircleIcon = (props) => (
-        <Icon {...props}>
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </Icon>
-      );
 
       // --- Feature Details Data ---
       const getFeatures = (isZH) => [
@@ -228,9 +235,7 @@
           desc: isZH
             ? "33kW 电源架 + 48V Busbar，将 I²R 损耗降至 1/16，释放高功率 GPU 柜。"
             : "33 kW shelves + 48 V busbar cut I²R loss to 1/16, enabling high-power GPU racks.",
-          detailedTitle: isZH
-            ? "48V 直流母排与高效供电"
-            : "48V DC Busbar & Power Efficiency",
+          detailedTitle: isZH ? "48V 直流母排与高效供电" : "48V DC Busbar & Power Efficiency",
           detailedDesc: isZH
             ? "随着 AI 芯片功率激增，传统的 12V 配电架构面临巨大的 I²R 传输损耗。我们的方案采用 OCP ORv3 标准的 48V 直流母排（Busbar）架构，配合 33kW 高效电源架（Power Shelf）。将电压从 12V 提升至 48V，电流降低至原来的 1/4，传输损耗降低至 1/16。通过 BB1000 大电流盲插连接器，实现单一母排支持 100kW+ 机柜功率密度。"
             : "As AI chip power surges, traditional 12V distribution faces massive I²R transmission losses. Our solution adopts the OCP ORv3 standard 48V DC Busbar architecture, coupled with 33kW high-efficiency Power Shelves. Raising voltage from 12V to 48V reduces current to 1/4 and transmission losses to 1/16. Using BB1000 high-current blind-mate connectors, a single busbar supports 100kW+ rack power density.",
@@ -256,9 +261,7 @@
           desc: isZH
             ? "为 3M EBO / TwinAx 提供零应力布线与正压洁净环境，保障 112G / 224G SI。"
             : "Provides zero-stress routing and clean positive-pressure paths for 3M EBO / TwinAx at 112G / 224G.",
-          detailedTitle: isZH
-            ? "3M™ EBO 扩束光互连与 TwinAx"
-            : "3M™ EBO & TwinAx Interconnect",
+          detailedTitle: isZH ? "3M™ EBO 扩束光互连与 TwinAx" : "3M™ EBO & TwinAx Interconnect",
           detailedDesc: isZH
             ? "在 112G 和即将到来的 224G PAM4 时代，信号完整性（SI）至关重要。我们集成了 3M™ EBO（扩束光互连）技术，通过扩束透镜将光束截面扩大，使其对微尘的敏感度降低 100 倍以上，极大地提高了恶劣环境下的可靠性。结合机柜背部的盲插设计，运维人员无需接触脆弱的光纤端面即可完成服务器的互连维护。"
             : "In the era of 112G and upcoming 224G PAM4, Signal Integrity (SI) is paramount. We integrate 3M™ Expanded Beam Optical (EBO) technology, which expands the beam cross-section via lenses, making it over 100x less sensitive to dust. Combined with blind-mate designs at the rear of the rack, operators can maintain server interconnects without touching fragile fiber end-faces.",
@@ -278,17 +281,16 @@
         },
       ];
 
-      // --- Modal for feature ---
+      // --- Feature Modal ---
       const FeatureModal = ({ feature, onClose, isZH }) => {
         if (!feature) return null;
-
         return (
           <div
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
             onClick={onClose}
           >
             <div
-              className="bg-white max-w-2xl w-full max-h[90vh] overflow-y-auto rounded-sm shadow-2xl relative animate-slide-up"
+              className="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-sm shadow-2xl relative animate-slide-up"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="absolute top-0 left-0 w-full h-2 bg-[#FF0000]"></div>
@@ -352,37 +354,69 @@
         );
       };
 
-      // --- Main App ---
+      // --- Image Zoom Modal ---
+      const ImageModal = ({ image, onClose }) => {
+        if (!image) return null;
+        return (
+          <div
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in p-4"
+            onClick={onClose}
+          >
+            <div
+              className="relative max-w-5xl w-full max-h-[90vh] bg-black rounded-md overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 z-10 bg-black/60 text-white p-2 rounded-full hover:bg-black/80"
+              >
+                <XIcon className="w-5 h-5" />
+              </button>
+              <img
+                src={image.src}
+                alt={image.text}
+                className="w-full h-full object-contain bg-black"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-3">
+                <p className="text-sm text-white font-medium">{image.text}</p>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- Main App Component ---
       function App() {
         const [lang, setLang] = useState("zh");
         const [isMenuOpen, setIsMenuOpen] = useState(false);
         const [selectedFeature, setSelectedFeature] = useState(null);
-        const [lightbox, setLightbox] = useState(null); // 图片放大
+        const [zoomImage, setZoomImage] = useState(null);
         const isZH = lang === "zh";
 
+        // 锁定滚动（菜单 / Modal / 大图）
         useEffect(() => {
-          if (isMenuOpen || selectedFeature || lightbox) {
+          if (isMenuOpen || selectedFeature || zoomImage) {
             document.body.style.overflow = "hidden";
           } else {
             document.body.style.overflow = "unset";
           }
-        }, [isMenuOpen, selectedFeature, lightbox]);
+        }, [isMenuOpen, selectedFeature, zoomImage]);
 
         const features = getFeatures(isZH);
 
-        // 图片展示数据（带放大）
+        // 图片展示数据（用于缩略图 + 放大）
         const galleryImages = [
           {
-            src: `./image/strucature.png`,
-            title: isZH ? "ORv3 机柜结构示意" : "ORv3 Rack Structure",
+            src: "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/strucature.png",
+            text: isZH ? "ORv3 机柜结构示意" : "ORv3 Rack Structure",
           },
           {
-            src: `./image/Twinax.png`,
-            title: isZH ? "48V 母排与 BB1000 + TwinAx" : "48V Busbar + BB1000 + TwinAx",
+            src: "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Twinax.png",
+            text: isZH ? "48V 母排与 BB1000 + TwinAx" : "48V Busbar with BB1000 + TwinAx",
           },
           {
-            src: `./image/EBO.png`,
-            title: isZH ? "3M EBO 光模块" : "3M EBO Optical Module",
+            src: "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/EBO.png",
+            text: isZH ? "3M EBO 光模块" : "3M EBO Optical Module",
           },
         ];
 
@@ -397,46 +431,25 @@
               />
             )}
 
-            {/* Image Lightbox */}
-            {lightbox && (
-              <div
-                className="fixed inset-0 z-[90] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
-                onClick={() => setLightbox(null)}
-              >
-                <div
-                  className="relative max-w-5xl w-full max-h-[90vh] bg-black rounded-sm overflow-hidden animate-slide-up"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={() => setLightbox(null)}
-                    className="absolute top-3 right-3 z-20 p-2 bg-black/60 text-white rounded-full hover:bg-black/80"
-                  >
-                    <XIcon className="w-5 h-5" />
-                  </button>
-                  <img
-                    src={lightbox.src}
-                    alt={lightbox.title}
-                    className="w-full max-h-[82vh] object-contain bg-black"
-                  />
-                  <div className="p-3 text-center text-sm text-gray-100">
-                    {lightbox.title}
-                  </div>
-                </div>
-              </div>
+            {/* Image Zoom Modal */}
+            {zoomImage && (
+              <ImageModal image={zoomImage} onClose={() => setZoomImage(null)} />
             )}
 
             {/* Header */}
             <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
               <div className="max-w-[1440px] mx-auto h-[72px] px-4 md:px-8 flex items-center justify-between">
                 <div className="flex items-center gap-8 h-full">
+                  {/* Logo */}
                   <div className="h-full flex items-center -ml-4 md:ml-0 cursor-pointer">
                     <img
-                      src={`./image/DCdeeptech_logo.png`}
+                      src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/DCdeeptech_logo.png"
                       alt="DCDeepTech"
                       className="h-12 w-auto object-contain"
                     />
                   </div>
 
+                  {/* Desktop Nav */}
                   <nav className="hidden lg:flex gap-8 text-[15px] font-bold text-[#4b4b4b]">
                     <a
                       href="#solutions"
@@ -489,7 +502,7 @@
               <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
                 <div className="flex justify-between items-center p-4 border-b border-gray-100">
                   <img
-                    src={`./image/DCdeeptech_logo.png`}
+                    src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/DCdeeptech_logo.png"
                     alt="DCDT"
                     className="h-8 w-auto"
                   />
@@ -538,69 +551,52 @@
               </div>
             )}
 
-           <!-- Hero Section -->
-<section class="relative bg-[#f2f2f2] overflow-hidden">
-  <div class="max-w-[1440px] mx-auto grid md:grid-cols-2 min-h-[560px]">
-    
-    <!-- Left Content -->
-    <div class="flex flex-col justify-center px-6 md:px-12 py-16 md:py-24 z-10">
-      <div class="w-0 h-0 border-l-[12px] border-l-transparent border-t-[18px] border-t-[#FF0000] border-r-[12px] border-r-transparent mb-6"></div>
-      <h1 class="text-4xl lg:text-5xl font-bold leading-tight text-[#333333] mb-6 tracking-tight">
-        面向 AI 时代的 OCP ORv3 高密度基础设施技术合作路线
-      </h1>
-      <p class="text-lg text-gray-600 max-w-xl leading-relaxed mb-8 font-light">
-        基于《DCDeepTech OCP ORv3 基础设施深度技术整合报告》，梳理 DCDT 与生态伙伴的联合方案。
-      </p>
+            {/* Hero Section */}
+            <section className="bg-[#f2f2f2] relative overflow-hidden">
+              <div className="max-w-[1440px] mx-auto grid md:grid-cols-2 min-h-[560px]">
+                <div className="flex flex-col justify-center px-6 md:px-12 py-16 md:py-24 z-10">
+                  <div className="w-0 h-0 border-l-[12px] border-l-transparent border-t-[18px] border-t-[#FF0000] border-r-[12px] border-r-transparent mb-6"></div>
 
-      <div class="flex flex-wrap gap-4">
-        <a
-          href="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/document/DCDT_whitepaper.pdf"
-          target="_blank"
-          class="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md"
-        >
-          下载白皮书
-        </a>
+                  <h1 className="text-4xl lg:text-5xl font-bold leading-tight text-[#333333] mb-6 tracking-tight">
+                    {isZH
+                      ? "面向 AI 时代的 OCP ORv3 高密度基础设施技术合作路线"
+                      : "OCP ORv3 High-Density Infrastructure Roadmap for the AI Era"}
+                  </h1>
+                  <p className="text-lg text-gray-600 max-w-xl leading-relaxed mb-8 font-light">
+                    {isZH
+                      ? '基于《DCDeepTech OCP ORv3 基础设施深度技术整合报告》，梳理 DCDT 与生态伙伴在机柜、供电与 3M EBO / TwinAx 互连上的联合合作路线。'
+                      : 'Based on the "DCDeepTech OCP ORv3 Infrastructure Deep Integration Report", we outline how DCDT and partners co-develop cabinet, power and 3M EBO / TwinAx interconnect solutions.'}
+                  </p>
 
-        <button class="border-2 border-[#333333] text-[#333333] hover:bg-[#333333] hover:text-white px-8 py-3 rounded-md font-bold text-[15px] transition-all">
-          预约技术对接
-        </button>
-      </div>
-    </div>
+                  <div className="flex flex-wrap gap-4">
+                    <a
+                      href="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/document/DCDT_OCP_ORv3_3M_whitepaper.pdf"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md cursor-pointer decoration-0"
+                    >
+                      {isZH ? "下载白皮书" : "Download Whitepaper"}
+                      <DownloadIcon className="w-4 h-4" />
+                    </a>
+                    <button className="group bg-transparent border-2 border-[#333333] text-[#333333] hover:bg-[#333333] hover:text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all">
+                      {isZH ? "预约技术对接" : "Contact Sales"}
+                      <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                </div>
 
-    <!-- Right Hero Image -->
-    <div class="relative h-[560px] md:h-auto overflow-hidden">
+                {/* Hero Graphic: Nvidia.png，整图展示 + 动画 */}
+                <div className="relative h-64 md:h-auto bg-white overflow-hidden flex items-center justify-center">
+                  <img
+                    src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Nvidia.png"
+                    alt="Data Center Digital Twin"
+                    className="hero-image w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+            </section>
 
-      <!-- 动画：缓慢缩放 + 淡入 -->
-      <img 
-        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Nvidia.png"
-        alt="Hero"
-        class="absolute inset-0 w-full h-full object-cover opacity-0 animate-heroFade zoom-slow"
-      />
-    </div>
-  </div>
-</section>
-
-<!-- 动画样式 -->
-<style>
-  @keyframes heroFade {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .animate-heroFade {
-    animation: heroFade 1.5s ease-out forwards;
-  }
-
-  @keyframes zoomSlow {
-    from { transform: scale(1.05); }
-    to { transform: scale(1); }
-  }
-  .zoom-slow {
-    animation: zoomSlow 10s ease-out forwards;
-  }
-</style>
-   
-
-            {/* Value Proposition */}
+            {/* Value Proposition / Features */}
             <section
               id="solutions"
               className="py-20 max-w-[1440px] mx-auto px-6 md:px-12"
@@ -634,7 +630,7 @@
                       }}
                       className="text-[#FF0000] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all outline-none"
                     >
-                      {isZH ? "了解详情" : "Learn more"}{" "}
+                      {isZH ? "了解详情" : "Learn more"}
                       <ArrowRightIcon className="w-4 h-4" />
                     </button>
                   </div>
@@ -643,7 +639,10 @@
             </section>
 
             {/* Roadmap */}
-            <section id="roadmap" className="bg-[#333333] text-white py-24">
+            <section
+              id="roadmap"
+              className="bg-[#333333] text-white py-24"
+            >
               <div className="max-w-[1440px] mx-auto px-6 md:px-12">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 border-b border-gray-600 pb-8">
                   <div>
@@ -746,7 +745,10 @@
             </section>
 
             {/* Technical Deep Dive */}
-            <section id="technology" className="py-24 bg-white">
+            <section
+              id="technology"
+              className="py-24 bg-white"
+            >
               <div className="max-w-[1440px] mx-auto px-6 md:px-12">
                 <div className="grid lg:grid-cols-[1fr_2fr] gap-12">
                   <div className="space-y-6">
@@ -759,7 +761,7 @@
                         : "The report dissects ORv3 across mechanical, electrical and interconnect dimensions. Explore the modules to view specs and reports."}
                     </p>
                     <button className="text-[#FF0000] font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all uppercase tracking-wider">
-                      {isZH ? "浏览完整文档库" : "Browse Document Library"}{" "}
+                      {isZH ? "浏览完整文档库" : "Browse Document Library"}
                       <ChevronRightIcon className="w-4 h-4" />
                     </button>
                   </div>
@@ -786,9 +788,7 @@
                       },
                       {
                         category: isZH ? "3M 互连" : "3M Interconnect",
-                        title: isZH
-                          ? "TwinAx + EBO 风道"
-                          : "TwinAx + EBO Paths",
+                        title: isZH ? "TwinAx + EBO 风道" : "TwinAx + EBO Paths",
                         desc: isZH
                           ? "围绕 TwinAx 弯曲半径、阻抗连续性，结合 EBO 正压防尘与等电位接地网络。"
                           : "Target TwinAx bend radius, impedance continuity, plus EBO positive-pressure dust control.",
@@ -817,7 +817,7 @@
               </div>
             </section>
 
-            {/* Video Section */}
+            {/* Video Showcase: 3 个视频 */}
             <section
               id="showcase"
               className="bg-[#f2f2f2] py-24"
@@ -826,7 +826,7 @@
                 <div className="flex items-center justify-between mb-10">
                   <div>
                     <h2 className="text-3xl font-bold text-[#333333]">
-                      {isZH ? "整体方案视频" : "Solution Videos"}
+                      {isZH ? "整体方案与动画展示" : "Solution & Animation Showcase"}
                     </h2>
                     <div className="w-16 h-1 bg-[#FF0000] mt-3"></div>
                   </div>
@@ -834,13 +834,13 @@
                     href="#"
                     className="hidden md:flex text-[#FF0000] text-sm font-bold items-center gap-2 hover:gap-3 transition-all"
                   >
-                    {isZH ? "查看所有视频" : "View All Videos"}{" "}
+                    {isZH ? "查看所有视频" : "View All Videos"}
                     <ArrowRightIcon className="w-4 h-4" />
                   </a>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-8">
-                  {/* Video 1 */}
+                <div className="grid md:grid-cols-3 gap-8">
+                  {/* Video 1 - 项目总览 */}
                   <div className="bg-white p-4 shadow-sm group">
                     <div className="relative aspect-video bg-black mb-4 overflow-hidden">
                       <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
@@ -849,7 +849,7 @@
                         </div>
                       </div>
                       <video
-                        src={`./video/3M_OCP_ORv3_Integration.mp4`}
+                        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/3M_OCP_ORv3_Integration.mp4"
                         className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
                         controls
                         type="video/mp4"
@@ -865,7 +865,7 @@
                     </p>
                   </div>
 
-                  {/* Video 2: OCP Rack / Power / Cooling animation */}
+                  {/* Video 2 - OCP Rack / Power / Cooling 动画 */}
                   <div className="bg-white p-4 shadow-sm group">
                     <div className="relative aspect-video bg-black mb-4 overflow-hidden">
                       <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
@@ -874,34 +874,63 @@
                         </div>
                       </div>
                       <video
-                        src={`./video/The_New_Data_Center_Blueprint.mp4`}
+                        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/The_New_Data_Center_Blueprint.mp4"
                         className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
                         controls
                         type="video/mp4"
                       ></video>
                     </div>
                     <h3 className="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
-                      {isZH ? "OCP Rack / Power / Cooling 动画" : "OCP Rack / Power / Cooling Animation"}
+                      {isZH
+                        ? "OCP Rack / Power / Cooling 动画"
+                        : "OCP Rack / Power / Cooling Animation"}
                     </h3>
                     <p className="text-sm text-gray-500">
                       {isZH
                         ? "展示 ORv3 机柜、电源架、液冷 / 风冷一体方案的动态演示，用于远程技术评审。"
-                        : "Animated walkthrough of ORv3 rack, power shelves and cooling for remote technical reviews."}
+                        : "Dynamic walk-through of ORv3 racks, power shelves and cooling solution for remote technical review."}
+                    </p>
+                  </div>
+
+                  {/* Video 3 - Digital Twin / Blueprint */}
+                  <div className="bg-white p-4 shadow-sm group">
+                    <div className="relative aspect-video bg-black mb-4 overflow-hidden">
+                      <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                        <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          <PlayIcon className="w-6 h-6 text-[#FF0000] ml-1 fill-[#FF0000]" />
+                        </div>
+                      </div>
+                      <video
+                        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/The_New_Data_Center_Blueprint.mp4"
+                        className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
+                        controls
+                        type="video/mp4"
+                      ></video>
+                    </div>
+                    <h3 className="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
+                      {isZH
+                        ? "数据中心 Digital Twin 蓝图"
+                        : "Data Center Digital Twin Blueprint"}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {isZH
+                        ? "展示基于 NVIDIA Omniverse / Modulus 的数据中心数字孪生、CFD / FNM 联合仿真能力。"
+                        : "Shows a blueprint of data center digital twin using NVIDIA Omniverse / Modulus with CFD / FNM simulation."}
                     </p>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* Image Showcase with zoom */}
+            {/* Image Gallery with zoom */}
             <section className="py-24 max-w-[1440px] mx-auto px-6 md:px-12">
               <h2 className="text-2xl font-bold text-[#333333] mb-2">
                 {isZH ? "图像展示" : "Image Showcase"}
               </h2>
               <p className="text-sm text-gray-500 mb-6">
                 {isZH
-                  ? "点击任意图片可放大查看细节。"
-                  : "Click any image to view it in detail."}
+                  ? "点击任意图片或放大镜图标可以查看大图细节。"
+                  : "Click any image or zoom icon to view details in full size."}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -909,34 +938,35 @@
                   <div
                     key={i}
                     className="group relative aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200 cursor-pointer"
-                    onClick={() => setLightbox(img)}
+                    onClick={() => setZoomImage(img)}
                   >
                     <img
                       src={img.src}
-                      alt={img.title}
+                      alt={img.text}
                       className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
                     />
-                    {/* Zoom icon */}
+                    {/* 灰底文字 */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <span className="text-white text-sm font-bold">
+                        {img.text}
+                      </span>
+                    </div>
+                    {/* 放大镜图标 */}
                     <button
-                      className="absolute top-2 right-2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setLightbox(img);
+                        setZoomImage(img);
                       }}
+                      className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <SearchIcon className="w-4 h-4" />
                     </button>
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <span className="text-white text-sm font-bold">
-                        {img.title}
-                      </span>
-                    </div>
                   </div>
                 ))}
               </div>
             </section>
 
-            {/* Contact */}
+            {/* Contact Section */}
             <section className="bg-[#333333] text-white py-24 border-t-8 border-[#FF0000]">
               <div className="max-w-[1000px] mx-auto px-6">
                 <div className="text-center mb-12">
@@ -1041,7 +1071,7 @@
                     Science. Applied to Data Centers.
                   </span>
                 </div>
-                <div className="flex gap-6">
+                <div className="flex flex-wrap gap-6 justify-center md:justify-end">
                   <span>
                     © {new Date().getFullYear()} DCDeepTech.{" "}
                     {isZH ? "保留所有权利。" : "All rights reserved."}

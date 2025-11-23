@@ -238,7 +238,8 @@
                   {/* Logo - Replaced Red Box with DCDeepTech Logo */}
                   <div className="h-full flex items-center -ml-4 md:ml-0 cursor-pointer">
                     <img 
-                      src={`/image/DCdeeptech_logo.png`} 
+                      src={`./image/DCdeeptech_logo.png`}     
+
                       alt="DCDeepTech" 
                       className="h-12 w-auto object-contain" 
                     />
@@ -281,7 +282,7 @@
             {isMenuOpen && (
               <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
                  <div className="flex justify-between items-center p-4 border-b border-gray-100">
-                    <img src={`/image/DCdeeptech_logo.png`} alt="DCDT" className="h-8 w-auto" />
+                    <img src={`./image/DCdeeptech_logo.png`} alt="DCDT" className="h-8 w-auto" />
                     <button onClick={() => setIsMenuOpen(false)}>
                        <XIcon className="w-8 h-8 text-[#333333]" />
                     </button>

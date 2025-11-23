@@ -1,6 +1,6 @@
  <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="zh-CN">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DCDeepTech · OCP ORv3 Cooperation</title>
@@ -9,1094 +9,735 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Google Fonts: Roboto -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- React & ReactDOM -->
-    <script
-      crossorigin
-      src="https://unpkg.com/react@18/umd/react.production.min.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
-    ></script>
-
-    <!-- Babel for JSX compilation in browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
 
     <style>
-      body {
-        font-family: "Roboto", Helvetica, Arial, sans-serif;
-        color: #333333;
-        -webkit-font-smoothing: antialiased;
-      }
+        body {
+            font-family: "Roboto", Helvetica, Arial, sans-serif;
+            color: #333333;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
 
-      /* 3M Red Utility */
-      .bg-3m-red {
-        background-color: #ff0000;
-      }
-      .text-3m-red {
-        color: #ff0000;
-      }
-      .border-3m-red {
-        border-color: #ff0000;
-      }
-      .hover-bg-3m-red:hover {
-        background-color: #ff0000;
-      }
+        /* Bilingual Toggle Logic */
+        /* Default is Chinese (no class on body), so hide English */
+        .lang-en { display: none; }
+        
+        /* When body has class 'en-mode', hide Chinese, show English */
+        body.en-mode .lang-zh { display: none !important; }
+        body.en-mode .lang-en { display: inline; }
+        body.en-mode div.lang-en, body.en-mode p.lang-en, body.en-mode h1.lang-en, body.en-mode h2.lang-en, body.en-mode h3.lang-en { display: block; }
 
-      /* Smooth Scrolling */
-      html {
-        scroll-behavior: smooth;
-      }
+        /* 3M Red Utility */
+        .bg-3m-red { background-color: #ff0000; }
+        .text-3m-red { color: #ff0000; }
+        .border-3m-red { border-color: #ff0000; }
+        .hover-bg-3m-red:hover { background-color: #ff0000; }
 
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #888;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
+        /* Smooth Scrolling */
+        html { scroll-behavior: smooth; }
 
-      /* Modal Animation */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-      @keyframes slideUp {
-        from {
-          transform: translateY(20px);
-          opacity: 0;
-        }
-        to {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.2s ease-out forwards;
-      }
-      .animate-slide-up {
-        animation: slideUp 0.3s ease-out forwards;
-      }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-      /* Hero image轻微漂浮动画，整图展示 */
-      @keyframes heroFloat {
-        0% {
-          transform: translateY(0);
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
+
+        /* Hero Image Float */
+        @keyframes heroFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
         }
-        100% {
-          transform: translateY(-8px);
-        }
-      }
-      .hero-image {
-        animation: heroFloat 6s ease-in-out infinite alternate;
-      }
+        .hero-image { animation: heroFloat 6s ease-in-out infinite alternate; }
+
+        /* Utility for Modal Lock */
+        body.modal-open { overflow: hidden; }
     </style>
-  </head>
-  <body class="bg-white">
-    <div id="root"></div>
+</head>
+<body class="bg-white">
 
-    <script type="text/babel">
-      const { useState, useEffect } = React;
-
-      // --- Icons Components (简单 SVG) ---
-      const Icon = ({ children, className, ...props }) => (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={className}
-          {...props}
-        >
-          {children}
-        </svg>
-      );
-
-      const MenuIcon = (props) => (
-        <Icon {...props}>
-          <line x1="4" x2="20" y1="12" y2="12" />
-          <line x1="4" x2="20" y1="6" y2="6" />
-          <line x1="4" x2="20" y1="18" y2="18" />
-        </Icon>
-      );
-      const SearchIcon = (props) => (
-        <Icon {...props}>
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.3-4.3" />
-        </Icon>
-      );
-      const GlobeIcon = (props) => (
-        <Icon {...props}>
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z" />
-          <path d="M2 12h20" />
-        </Icon>
-      );
-      const ChevronRightIcon = (props) => (
-        <Icon {...props}>
-          <path d="m9 18 6-6-6-6" />
-        </Icon>
-      );
-      const ArrowRightIcon = (props) => (
-        <Icon {...props}>
-          <path d="M5 12h14" />
-          <path d="m12 5 7 7-7 7" />
-        </Icon>
-      );
-      const DownloadIcon = (props) => (
-        <Icon {...props}>
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" x2="12" y1="15" y2="3" />
-        </Icon>
-      );
-      const PlayIcon = (props) => (
-        <Icon {...props}>
-          <polygon points="5 3 19 12 5 21 5 3" />
-        </Icon>
-      );
-      const FileTextIcon = (props) => (
-        <Icon {...props}>
-          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="16" x2="8" y1="13" y2="13" />
-          <line x1="16" x2="8" y1="17" y2="17" />
-          <line x1="10" x2="8" y1="9" y2="9" />
-        </Icon>
-      );
-      const XIcon = (props) => (
-        <Icon {...props}>
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </Icon>
-      );
-      const MailIcon = (props) => (
-        <Icon {...props}>
-          <rect width="20" height="16" x="2" y="4" rx="2" />
-          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-        </Icon>
-      );
-
-      // --- Feature Details Data ---
-      const getFeatures = (isZH) => [
-        {
-          id: "mech",
-          icon: '21"',
-          title: isZH ? "空间换效率" : "Space-for-efficiency",
-          subtitle: isZH ? '21" ORv3 架构' : '21" ORv3 Architecture',
-          desc: isZH
-            ? '从 19" 向 21" ORv3 迁移，侧边空间专用化给 TwinAx 线缆与气流管理。'
-            : 'Migrating from 19" to 21" ORv3, dedicating side space to TwinAx routing and airflow management.',
-          detailedTitle: isZH
-            ? "21英寸开放机架架构 (ORv3)"
-            : "21-inch Open Rack v3 Architecture",
-          detailedDesc: isZH
-            ? '传统 19 英寸机柜内宽 450mm，而 OCP ORv3 21 英寸架构提供 538mm 内宽。这多出的 88mm 空间不仅仅是尺寸的增加，更是为高速 TwinAx 线缆提供了必要的弯曲半径空间，避免信号衰减。同时，ORv3 的 OpenU (OU) 高度为 48mm，略高于传统 RU 的 44.45mm，进一步优化了气流通道，使得高密度 GPU 服务器的散热效率提升 15% 以上。'
-            : "Traditional 19-inch racks have an inner width of 450mm, while OCP ORv3 21-inch architecture offers 538mm. This extra 88mm is critical for high-speed TwinAx cabling, providing the necessary bend radius to prevent signal attenuation. Additionally, the ORv3 OpenU (OU) height is 48mm, slightly taller than the traditional RU (44.45mm), optimizing airflow channels and improving cooling efficiency for high-density GPU servers by over 15%.",
-          specs: isZH
-            ? [
-                '内宽: 538mm (vs 19" 450mm)',
-                "OU高度: 48mm (vs RU 44.45mm)",
-                "散热效率提升: >15%",
-                "兼容性: 提供 21转19 适配导轨",
-              ]
-            : [
-                "Inner Width: 538mm (vs 450mm)",
-                "OU Height: 48mm (vs 44.45mm)",
-                "Cooling Efficiency: >15% boost",
-                "Compatibility: 21-to-19 adapter rails available",
-              ],
-        },
-        {
-          id: "elec",
-          icon: "48V",
-          title: isZH ? "电压换密度" : "Voltage-for-density",
-          subtitle: isZH ? "48V Busbar 供电" : "48V Busbar Power",
-          desc: isZH
-            ? "33kW 电源架 + 48V Busbar，将 I²R 损耗降至 1/16，释放高功率 GPU 柜。"
-            : "33 kW shelves + 48 V busbar cut I²R loss to 1/16, enabling high-power GPU racks.",
-          detailedTitle: isZH ? "48V 直流母排与高效供电" : "48V DC Busbar & Power Efficiency",
-          detailedDesc: isZH
-            ? "随着 AI 芯片功率激增，传统的 12V 配电架构面临巨大的 I²R 传输损耗。我们的方案采用 OCP ORv3 标准的 48V 直流母排（Busbar）架构，配合 33kW 高效电源架（Power Shelf）。将电压从 12V 提升至 48V，电流降低至原来的 1/4，传输损耗降低至 1/16。通过 BB1000 大电流盲插连接器，实现单一母排支持 100kW+ 机柜功率密度。"
-            : "As AI chip power surges, traditional 12V distribution faces massive I²R transmission losses. Our solution adopts the OCP ORv3 standard 48V DC Busbar architecture, coupled with 33kW high-efficiency Power Shelves. Raising voltage from 12V to 48V reduces current to 1/4 and transmission losses to 1/16. Using BB1000 high-current blind-mate connectors, a single busbar supports 100kW+ rack power density.",
-          specs: isZH
-            ? [
-                "电压架构: 48V DC (损耗降低至 1/16)",
-                "电源架: 33kW (N+1 冗余)",
-                "连接器: BB1000 盲插",
-                "支持功率密度: >100kW/柜",
-              ]
-            : [
-                "Voltage: 48V DC (1/16th loss)",
-                "Power Shelf: 33kW (N+1 Redundant)",
-                "Connector: BB1000 Blind-mate",
-                "Power Density: >100kW/Rack",
-              ],
-        },
-        {
-          id: "inter",
-          icon: "EBO",
-          title: isZH ? "互连友好" : "Interconnect-friendly",
-          subtitle: isZH ? "3M™ EBO / TwinAx" : "3M™ EBO / TwinAx",
-          desc: isZH
-            ? "为 3M EBO / TwinAx 提供零应力布线与正压洁净环境，保障 112G / 224G SI。"
-            : "Provides zero-stress routing and clean positive-pressure paths for 3M EBO / TwinAx at 112G / 224G.",
-          detailedTitle: isZH ? "3M™ EBO 扩束光互连与 TwinAx" : "3M™ EBO & TwinAx Interconnect",
-          detailedDesc: isZH
-            ? "在 112G 和即将到来的 224G PAM4 时代，信号完整性（SI）至关重要。我们集成了 3M™ EBO（扩束光互连）技术，通过扩束透镜将光束截面扩大，使其对微尘的敏感度降低 100 倍以上，极大地提高了恶劣环境下的可靠性。结合机柜背部的盲插设计，运维人员无需接触脆弱的光纤端面即可完成服务器的互连维护。"
-            : "In the era of 112G and upcoming 224G PAM4, Signal Integrity (SI) is paramount. We integrate 3M™ Expanded Beam Optical (EBO) technology, which expands the beam cross-section via lenses, making it over 100x less sensitive to dust. Combined with blind-mate designs at the rear of the rack, operators can maintain server interconnects without touching fragile fiber end-faces.",
-          specs: isZH
-            ? [
-                "技术: 3M™ Expanded Beam Optical (EBO)",
-                "抗尘性: 敏感度降低 >100倍",
-                "速率支持: 112G / 224G PAM4",
-                "维护方式: 后端盲插，免清洁",
-              ]
-            : [
-                "Tech: 3M™ Expanded Beam Optical (EBO)",
-                "Dust Resistance: >100x improvement",
-                "Speed: 112G / 224G PAM4",
-                "Maintenance: Rear blind-mate, cleaning-free",
-              ],
-        },
-      ];
-
-      // --- Feature Modal ---
-      const FeatureModal = ({ feature, onClose, isZH }) => {
-        if (!feature) return null;
-        return (
-          <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
-            onClick={onClose}
-          >
-            <div
-              className="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-sm shadow-2xl relative animate-slide-up"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="absolute top-0 left-0 w-full h-2 bg-[#FF0000]"></div>
-
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-[#FF0000] hover:bg-gray-100 rounded-full transition-all"
-              >
-                <XIcon className="w-6 h-6" />
-              </button>
-
-              <div className="p-8 md:p-10">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-[#FF0000] text-white font-black flex items-center justify-center rounded-full text-lg shadow-md">
-                    {feature.icon}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">
-                      {feature.subtitle}
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-[#333333] mt-1">
-                      {feature.detailedTitle}
-                    </h3>
-                  </div>
+    <!-- ================= HEADER ================= -->
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-[1440px] mx-auto h-[72px] px-4 md:px-8 flex items-center justify-between">
+            <div class="flex items-center gap-8 h-full">
+                <!-- Logo -->
+                <div class="h-full flex items-center -ml-4 md:ml-0 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <img src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/DCdeeptech_logo.png" alt="DCDeepTech" class="h-12 w-auto object-contain" />
                 </div>
 
-                <div className="space-y-6">
-                  <p className="text-gray-600 leading-relaxed text-base md:text-lg">
-                    {feature.detailedDesc}
-                  </p>
-
-                  <div className="bg-gray-50 border-l-4 border-[#FF0000] p-6">
-                    <h4 className="font-bold text-[#333333] mb-4 uppercase text-sm tracking-wide">
-                      {isZH ? "关键技术规格" : "Key Specifications"}
-                    </h4>
-                    <ul className="grid sm:grid-cols-2 gap-3">
-                      {feature.specs.map((spec, idx) => (
-                        <li
-                          key={idx}
-                          className="flex items-start gap-2 text-sm text-gray-700"
-                        >
-                          <CheckCircleIcon className="w-4 h-4 text-[#FF0000] mt-0.5 shrink-0" />
-                          <span className="font-medium">{spec}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
-                  <button
-                    onClick={onClose}
-                    className="bg-[#333333] hover:bg-black text-white px-6 py-2 rounded-sm font-bold text-sm transition-colors"
-                  >
-                    {isZH ? "关闭" : "Close"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // --- Image Zoom Modal ---
-      const ImageModal = ({ image, onClose }) => {
-        if (!image) return null;
-        return (
-          <div
-            className="fixed inset-0 z-[90] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in p-4"
-            onClick={onClose}
-          >
-            <div
-              className="relative max-w-5xl w-full max-h-[90vh] bg-black rounded-md overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={onClose}
-                className="absolute top-3 right-3 z-10 bg-black/60 text-white p-2 rounded-full hover:bg-black/80"
-              >
-                <XIcon className="w-5 h-5" />
-              </button>
-              <img
-                src={image.src}
-                alt={image.text}
-                className="w-full h-full object-contain bg-black"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-3">
-                <p className="text-sm text-white font-medium">{image.text}</p>
-              </div>
-            </div>
-          </div>
-        );
-      };
-
-      // --- Main App Component ---
-      function App() {
-        const [lang, setLang] = useState("zh");
-        const [isMenuOpen, setIsMenuOpen] = useState(false);
-        const [selectedFeature, setSelectedFeature] = useState(null);
-        const [zoomImage, setZoomImage] = useState(null);
-        const isZH = lang === "zh";
-
-        // 锁定滚动（菜单 / Modal / 大图）
-        useEffect(() => {
-          if (isMenuOpen || selectedFeature || zoomImage) {
-            document.body.style.overflow = "hidden";
-          } else {
-            document.body.style.overflow = "unset";
-          }
-        }, [isMenuOpen, selectedFeature, zoomImage]);
-
-        const features = getFeatures(isZH);
-
-        // 图片展示数据（用于缩略图 + 放大）
-        const galleryImages = [
-          {
-            src: "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/strucature.png",
-            text: isZH ? "ORv3 机柜结构示意" : "ORv3 Rack Structure",
-          },
-          {
-            src: "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Twinax.png",
-            text: isZH ? "48V 母排与 BB1000 + TwinAx" : "48V Busbar with BB1000 + TwinAx",
-          },
-          {
-            src: "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/EBO.png",
-            text: isZH ? "3M EBO 光模块" : "3M EBO Optical Module",
-          },
-        ];
-
-        return (
-          <div className="min-h-screen bg-white font-sans text-[#333333]">
-            {/* Feature Modal */}
-            {selectedFeature && (
-              <FeatureModal
-                feature={selectedFeature}
-                onClose={() => setSelectedFeature(null)}
-                isZH={isZH}
-              />
-            )}
-
-            {/* Image Zoom Modal */}
-            {zoomImage && (
-              <ImageModal image={zoomImage} onClose={() => setZoomImage(null)} />
-            )}
-
-            {/* Header */}
-            <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-              <div className="max-w-[1440px] mx-auto h-[72px] px-4 md:px-8 flex items-center justify-between">
-                <div className="flex items-center gap-8 h-full">
-                  {/* Logo */}
-                  <div className="h-full flex items-center -ml-4 md:ml-0 cursor-pointer">
-                    <img
-                      src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/DCdeeptech_logo.png"
-                      alt="DCDeepTech"
-                      className="h-12 w-auto object-contain"
-                    />
-                  </div>
-
-                  {/* Desktop Nav */}
-                  <nav className="hidden lg:flex gap-8 text-[15px] font-bold text-[#4b4b4b]">
-                    <a
-                      href="#solutions"
-                      className="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors"
-                    >
-                      {isZH ? "解决方案" : "Solutions"}
+                <!-- Desktop Nav -->
+                <nav class="hidden lg:flex gap-8 text-[15px] font-bold text-[#4b4b4b]">
+                    <a href="#solutions" class="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors">
+                        <span class="lang-zh">解决方案</span><span class="lang-en">Solutions</span>
                     </a>
-                    <a
-                      href="#roadmap"
-                      className="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors"
-                    >
-                      {isZH ? "合作路线" : "Roadmap"}
+                    <a href="#roadmap" class="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors">
+                        <span class="lang-zh">合作路线</span><span class="lang-en">Roadmap</span>
                     </a>
-                    <a
-                      href="#technology"
-                      className="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors"
-                    >
-                      {isZH ? "核心技术" : "Technology"}
+                    <a href="#technology" class="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors">
+                        <span class="lang-zh">核心技术</span><span class="lang-en">Technology</span>
                     </a>
-                    <a
-                      href="#showcase"
-                      className="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors"
-                    >
-                      {isZH ? "展示中心" : "Showcase"}
+                    <a href="#showcase" class="hover:text-[#FF0000] hover:underline decoration-[#FF0000] underline-offset-4 decoration-2 transition-colors">
+                        <span class="lang-zh">展示中心</span><span class="lang-en">Showcase</span>
                     </a>
-                  </nav>
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <button
-                    className="hidden md:flex items-center gap-1 text-sm font-medium cursor-pointer hover:text-[#FF0000] transition-colors"
-                    onClick={() => setLang(isZH ? "en" : "zh")}
-                  >
-                    <GlobeIcon className="w-4 h-4" />
-                    <span>{isZH ? "EN" : "中文"}</span>
-                  </button>
-                  <SearchIcon className="w-5 h-5 cursor-pointer text-gray-600 hover:text-[#FF0000] transition-colors" />
-                  <button
-                    className="lg:hidden"
-                    onClick={() => setIsMenuOpen(true)}
-                  >
-                    <MenuIcon className="w-6 h-6 text-gray-600" />
-                  </button>
-                </div>
-              </div>
-            </header>
-
-            {/* Mobile Menu */}
-            {isMenuOpen && (
-              <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
-                <div className="flex justify-between items-center p-4 border-b border-gray-100">
-                  <img
-                    src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/DCdeeptech_logo.png"
-                    alt="DCDT"
-                    className="h-8 w-auto"
-                  />
-                  <button onClick={() => setIsMenuOpen(false)}>
-                    <XIcon className="w-8 h-8 text-[#333333]" />
-                  </button>
-                </div>
-                <nav className="flex flex-col p-6 gap-6 text-xl font-bold text-[#333333]">
-                  <a
-                    href="#solutions"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {isZH ? "解决方案" : "Solutions"}
-                  </a>
-                  <a
-                    href="#roadmap"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {isZH ? "合作路线" : "Roadmap"}
-                  </a>
-                  <a
-                    href="#technology"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {isZH ? "核心技术" : "Technology"}
-                  </a>
-                  <a
-                    href="#showcase"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {isZH ? "展示中心" : "Showcase"}
-                  </a>
-                  <div className="border-t border-gray-200 pt-6 mt-2">
-                    <button
-                      onClick={() => {
-                        setLang(isZH ? "en" : "zh");
-                        setIsMenuOpen(false);
-                      }}
-                      className="text-left text-[#FF0000] flex items-center gap-2"
-                    >
-                      <GlobeIcon className="w-5 h-5" />
-                      {isZH ? "English" : "切换至中文"}
-                    </button>
-                  </div>
                 </nav>
-              </div>
-            )}
+            </div>
 
-            {/* Hero Section */}
-            <section className="bg-[#f2f2f2] relative overflow-hidden">
-              <div className="max-w-[1440px] mx-auto grid md:grid-cols-2 min-h-[560px]">
-                <div className="flex flex-col justify-center px-6 md:px-12 py-16 md:py-24 z-10">
-                  <div className="w-0 h-0 border-l-[12px] border-l-transparent border-t-[18px] border-t-[#FF0000] border-r-[12px] border-r-transparent mb-6"></div>
+            <div class="flex items-center gap-6">
+                <!-- Lang Toggle -->
+                <button class="hidden md:flex items-center gap-1 text-sm font-medium cursor-pointer hover:text-[#FF0000] transition-colors" onclick="toggleLanguage()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+                    <span class="lang-zh">EN</span><span class="lang-en">中文</span>
+                </button>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="cursor-pointer text-gray-600 hover:text-[#FF0000] transition-colors"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                
+                <!-- Mobile Menu Button -->
+                <button class="lg:hidden" onclick="toggleMobileMenu(true)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
 
-                  <h1 className="text-4xl lg:text-5xl font-bold leading-tight text-[#333333] mb-6 tracking-tight">
-                    {isZH
-                      ? "面向 AI 时代的 OCP ORv3 高密度基础设施技术合作路线"
-                      : "OCP ORv3 High-Density Infrastructure Roadmap for the AI Era"}
-                  </h1>
-                  <p className="text-lg text-gray-600 max-w-xl leading-relaxed mb-8 font-light">
-                    {isZH
-                      ? '基于《DCDeepTech OCP ORv3 基础设施深度技术整合报告》，梳理 DCDT 与生态伙伴在机柜、供电与 3M EBO / TwinAx 互连上的联合合作路线。'
-                      : 'Based on the "DCDeepTech OCP ORv3 Infrastructure Deep Integration Report", we outline how DCDT and partners co-develop cabinet, power and 3M EBO / TwinAx interconnect solutions.'}
-                  </p>
+    <!-- ================= MOBILE MENU ================= -->
+    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-white animate-fade-in hidden">
+        <div class="flex justify-between items-center p-4 border-b border-gray-100">
+            <img src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/DCdeeptech_logo.png" alt="DCDT" class="h-8 w-auto" />
+            <button onclick="toggleMobileMenu(false)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#333333]"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+        <nav class="flex flex-col p-6 gap-6 text-xl font-bold text-[#333333]">
+            <a href="#solutions" onclick="toggleMobileMenu(false)"><span class="lang-zh">解决方案</span><span class="lang-en">Solutions</span></a>
+            <a href="#roadmap" onclick="toggleMobileMenu(false)"><span class="lang-zh">合作路线</span><span class="lang-en">Roadmap</span></a>
+            <a href="#technology" onclick="toggleMobileMenu(false)"><span class="lang-zh">核心技术</span><span class="lang-en">Technology</span></a>
+            <a href="#showcase" onclick="toggleMobileMenu(false)"><span class="lang-zh">展示中心</span><span class="lang-en">Showcase</span></a>
+            <div class="border-t border-gray-200 pt-6 mt-2">
+                <button onclick="toggleLanguage(); toggleMobileMenu(false);" class="text-left text-[#FF0000] flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+                    <span class="lang-zh">Switch to English</span><span class="lang-en">切换至中文</span>
+                </button>
+            </div>
+        </nav>
+    </div>
 
-                  <div className="flex flex-wrap gap-4">
-                    <a
-                      href="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/document/DCDT_OCP_ORv3_3M_whitepaper.pdf"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md cursor-pointer decoration-0"
-                    >
-                      {isZH ? "下载白皮书" : "Download Whitepaper"}
-                      <DownloadIcon className="w-4 h-4" />
+    <!-- ================= HERO SECTION ================= -->
+    <section class="bg-[#f2f2f2] relative overflow-hidden">
+        <div class="max-w-[1440px] mx-auto grid md:grid-cols-2 min-h-[560px]">
+            <div class="flex flex-col justify-center px-6 md:px-12 py-16 md:py-24 z-10">
+                <div class="w-0 h-0 border-l-[12px] border-l-transparent border-t-[18px] border-t-[#FF0000] border-r-[12px] border-r-transparent mb-6"></div>
+
+                <h1 class="text-4xl lg:text-5xl font-bold leading-tight text-[#333333] mb-6 tracking-tight">
+                    <span class="lang-zh">面向 AI 时代的 OCP ORv3 高密度基础设施技术合作路线</span>
+                    <span class="lang-en">OCP ORv3 High-Density Infrastructure Roadmap for the AI Era</span>
+                </h1>
+                <p class="text-lg text-gray-600 max-w-xl leading-relaxed mb-8 font-light">
+                    <span class="lang-zh">基于《DCDeepTech OCP ORv3 基础设施深度技术整合报告》，梳理 DCDT 与生态伙伴在机柜、供电与 3M EBO / TwinAx 互连上的联合合作路线。</span>
+                    <span class="lang-en">Based on the "DCDeepTech OCP ORv3 Infrastructure Deep Integration Report", we outline how DCDT and partners co-develop cabinet, power and 3M EBO / TwinAx interconnect solutions.</span>
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/document/DCDT_OCP_ORv3_3M_whitepaper.pdf" target="_blank" rel="noreferrer" class="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md cursor-pointer decoration-0">
+                        <span class="lang-zh">下载白皮书</span><span class="lang-en">Download Whitepaper</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                     </a>
-                    <button className="group bg-transparent border-2 border-[#333333] text-[#333333] hover:bg-[#333333] hover:text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all">
-                      {isZH ? "预约技术对接" : "Contact Sales"}
-                      <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <button class="group bg-transparent border-2 border-[#333333] text-[#333333] hover:bg-[#333333] hover:text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all">
+                        <span class="lang-zh">预约技术对接</span><span class="lang-en">Contact Sales</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </button>
-                  </div>
                 </div>
+            </div>
 
-                {/* Hero Graphic: Nvidia.png，整图展示 + 动画 */}
-                <div className="relative h-64 md:h-auto bg-white overflow-hidden flex items-center justify-center">
-                  <img
-                    src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Nvidia.png"
-                    alt="Data Center Digital Twin"
-                    className="hero-image w-full h-full object-contain"
-                  />
+            <!-- Hero Graphic -->
+            <div class="relative h-64 md:h-auto bg-white overflow-hidden flex items-center justify-center">
+                <img src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Nvidia.png" alt="Data Center Digital Twin" class="hero-image w-full h-full object-contain" />
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FEATURES SECTION ================= -->
+    <section id="solutions" class="py-20 max-w-[1440px] mx-auto px-6 md:px-12">
+        <div class="grid md:grid-cols-3 gap-8">
+            
+            <!-- Feature 1 -->
+            <div class="group bg-white border border-gray-200 p-8 flex flex-col items-start cursor-pointer hover:shadow-xl hover:border-gray-300 transition-all duration-300 relative overflow-hidden" onclick="openFeature('mech')">
+                <div class="absolute top-0 left-0 w-full h-1 bg-transparent group-hover:bg-[#FF0000] transition-colors"></div>
+                <div class="w-14 h-14 bg-gray-100 text-[#FF0000] font-black flex items-center justify-center rounded-full mb-6 text-sm group-hover:bg-[#FF0000] group-hover:text-white transition-colors">21"</div>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <span class="lang-zh">21" ORv3 架构</span><span class="lang-en">21" ORv3 Architecture</span>
                 </div>
-              </div>
-            </section>
+                <h3 class="text-2xl font-bold mb-4 text-[#333333]">
+                    <span class="lang-zh">空间换效率</span><span class="lang-en">Space-for-efficiency</span>
+                </h3>
+                <p class="text-[15px] text-gray-600 leading-relaxed mb-8 flex-grow">
+                    <span class="lang-zh">从 19" 向 21" ORv3 迁移，侧边空间专用化给 TwinAx 线缆与气流管理。</span>
+                    <span class="lang-en">Migrating from 19" to 21" ORv3, dedicating side space to TwinAx routing and airflow management.</span>
+                </p>
+                <button class="text-[#FF0000] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all outline-none">
+                    <span class="lang-zh">了解详情</span><span class="lang-en">Learn more</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div>
 
-            {/* Value Proposition / Features */}
-            <section
-              id="solutions"
-              className="py-20 max-w-[1440px] mx-auto px-6 md:px-12"
-            >
-              <div className="grid md:grid-cols-3 gap-8">
-                {features.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="group bg-white border border-gray-200 p-8 flex flex-col items-start cursor-pointer hover:shadow-xl hover:border-gray-300 transition-all duration-300 relative overflow-hidden"
-                    onClick={() => setSelectedFeature(item)}
-                  >
-                    <div className="absolute top-0 left-0 w-full h-1 bg-transparent group-hover:bg-[#FF0000] transition-colors"></div>
+            <!-- Feature 2 -->
+            <div class="group bg-white border border-gray-200 p-8 flex flex-col items-start cursor-pointer hover:shadow-xl hover:border-gray-300 transition-all duration-300 relative overflow-hidden" onclick="openFeature('elec')">
+                <div class="absolute top-0 left-0 w-full h-1 bg-transparent group-hover:bg-[#FF0000] transition-colors"></div>
+                <div class="w-14 h-14 bg-gray-100 text-[#FF0000] font-black flex items-center justify-center rounded-full mb-6 text-sm group-hover:bg-[#FF0000] group-hover:text-white transition-colors">48V</div>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <span class="lang-zh">48V Busbar 供电</span><span class="lang-en">48V Busbar Power</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-[#333333]">
+                    <span class="lang-zh">电压换密度</span><span class="lang-en">Voltage-for-density</span>
+                </h3>
+                <p class="text-[15px] text-gray-600 leading-relaxed mb-8 flex-grow">
+                    <span class="lang-zh">33kW 电源架 + 48V Busbar，将 I²R 损耗降至 1/16，释放高功率 GPU 柜。</span>
+                    <span class="lang-en">33 kW shelves + 48 V busbar cut I²R loss to 1/16, enabling high-power GPU racks.</span>
+                </p>
+                <button class="text-[#FF0000] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all outline-none">
+                    <span class="lang-zh">了解详情</span><span class="lang-en">Learn more</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div>
 
-                    <div className="w-14 h-14 bg-gray-100 text-[#FF0000] font-black flex items-center justify-center rounded-full mb-6 text-sm group-hover:bg-[#FF0000] group-hover:text-white transition-colors">
-                      {item.icon}
-                    </div>
+            <!-- Feature 3 -->
+            <div class="group bg-white border border-gray-200 p-8 flex flex-col items-start cursor-pointer hover:shadow-xl hover:border-gray-300 transition-all duration-300 relative overflow-hidden" onclick="openFeature('inter')">
+                <div class="absolute top-0 left-0 w-full h-1 bg-transparent group-hover:bg-[#FF0000] transition-colors"></div>
+                <div class="w-14 h-14 bg-gray-100 text-[#FF0000] font-black flex items-center justify-center rounded-full mb-6 text-sm group-hover:bg-[#FF0000] group-hover:text-white transition-colors">EBO</div>
+                <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <span class="lang-zh">3M™ EBO / TwinAx</span><span class="lang-en">3M™ EBO / TwinAx</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-[#333333]">
+                    <span class="lang-zh">互连友好</span><span class="lang-en">Interconnect-friendly</span>
+                </h3>
+                <p class="text-[15px] text-gray-600 leading-relaxed mb-8 flex-grow">
+                    <span class="lang-zh">为 3M EBO / TwinAx 提供零应力布线与正压洁净环境，保障 112G / 224G SI。</span>
+                    <span class="lang-en">Provides zero-stress routing and clean positive-pressure paths for 3M EBO / TwinAx at 112G / 224G.</span>
+                </p>
+                <button class="text-[#FF0000] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all outline-none">
+                    <span class="lang-zh">了解详情</span><span class="lang-en">Learn more</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div>
+        </div>
+    </section>
 
-                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                      {item.subtitle}
-                    </div>
-                    <h3 className="text-2xl font-bold mb-4 text-[#333333]">
-                      {item.title}
-                    </h3>
-                    <p className="text-[15px] text-gray-600 leading-relaxed mb-8 flex-grow">
-                      {item.desc}
-                    </p>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedFeature(item);
-                      }}
-                      className="text-[#FF0000] font-bold text-sm flex items-center gap-2 group-hover:gap-3 transition-all outline-none"
-                    >
-                      {isZH ? "了解详情" : "Learn more"}
-                      <ArrowRightIcon className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Roadmap */}
-            <section
-              id="roadmap"
-              className="bg-[#333333] text-white py-24"
-            >
-              <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 border-b border-gray-600 pb-8">
-                  <div>
-                    <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-                      {isZH
-                        ? "技术合作三阶段路线"
-                        : "Three-phase Technical Cooperation Roadmap"}
+    <!-- ================= ROADMAP SECTION ================= -->
+    <section id="roadmap" class="bg-[#333333] text-white py-24">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 border-b border-gray-600 pb-8">
+                <div>
+                    <h2 class="text-3xl lg:text-4xl font-bold mb-4">
+                        <span class="lang-zh">技术合作三阶段路线</span>
+                        <span class="lang-en">Three-phase Technical Cooperation Roadmap</span>
                     </h2>
-                    <div className="w-20 h-1.5 bg-[#FF0000]"></div>
-                  </div>
-                  <p className="text-gray-300 text-sm md:max-w-md md:text-right leading-relaxed">
-                    {isZH
-                      ? "从架构共识到联合 PoC，再到标准化 ORv3 模块量产。"
-                      : "From architectural alignment and joint PoC to standardized ORv3 module production."}
-                  </p>
+                    <div class="w-20 h-1.5 bg-[#FF0000]"></div>
                 </div>
+                <p class="text-gray-300 text-sm md:max-w-md md:text-right leading-relaxed">
+                    <span class="lang-zh">从架构共识到联合 PoC，再到标准化 ORv3 模块量产。</span>
+                    <span class="lang-en">From architectural alignment and joint PoC to standardized ORv3 module production.</span>
+                </p>
+            </div>
 
-                <div className="grid md:grid-cols-3">
-                  {[
-                    {
-                      phase: isZH ? "阶段 1" : "Phase 1",
-                      title: isZH
-                        ? "架构对齐 & 机柜验证"
-                        : "Architecture Alignment",
-                      items: isZH
-                        ? [
-                            'ORv3 21" 接口定义',
-                            '21"→19" 适配导轨验证',
-                            "单柜级机械承载与 CFD",
-                          ]
-                        : [
-                            'ORv3 21" interface definition',
-                            '21"→19" adapter validation',
-                            "Mechanical & CFD validation",
-                          ],
-                    },
-                    {
-                      phase: isZH ? "阶段 2" : "Phase 2",
-                      title: isZH
-                        ? "电气整合 & 3M 互连 PoC"
-                        : "Integration & 3M PoC",
-                      items: isZH
-                        ? [
-                            "33kW 电源架挂载 GPU",
-                            "TwinAx SI 与 EBO 盲插测试",
-                            "RMU 功率-温度-误码率遥测",
-                          ]
-                        : [
-                            "33kW shelf + GPU load",
-                            "TwinAx SI & EBO blind-mate",
-                            "RMU telemetry closing the loop",
-                          ],
-                    },
-                    {
-                      phase: isZH ? "阶段 3" : "Phase 3",
-                      title: isZH
-                        ? "标准化模组 & 交付"
-                        : "Standardization & Rollout",
-                      items: isZH
-                        ? [
-                            "ORv3 + 3M 互连一体化 BOM",
-                            "新加坡 / 东南亚部署培训",
-                            "OCP 社区参考设计认证",
-                          ]
-                        : [
-                            "Integrated BOM finalization",
-                            "SE Asia deployment training",
-                            "OCP Reference Design cert",
-                          ],
-                    },
-                  ].map((step, idx) => (
-                    <div
-                      key={idx}
-                      className="relative bg-[#404040] p-10 border-r border-gray-600 last:border-0 hover:bg-[#4a4a4a] transition-colors group cursor-default"
-                    >
-                      <div className="absolute top-0 left-0 bg-[#FF0000] text-white text-xs font-bold px-3 py-1">
-                        {step.phase}
-                      </div>
-                      <div className="mt-6 mb-6">
-                        <h3 className="text-xl font-bold group-hover:text-white text-gray-100 leading-tight">
-                          {step.title}
+            <div class="grid md:grid-cols-3">
+                <!-- Phase 1 -->
+                <div class="relative bg-[#404040] p-10 border-r border-gray-600 last:border-0 hover:bg-[#4a4a4a] transition-colors group cursor-default">
+                    <div class="absolute top-0 left-0 bg-[#FF0000] text-white text-xs font-bold px-3 py-1">
+                        <span class="lang-zh">阶段 1</span><span class="lang-en">Phase 1</span>
+                    </div>
+                    <div class="mt-6 mb-6">
+                        <h3 class="text-xl font-bold group-hover:text-white text-gray-100 leading-tight">
+                            <span class="lang-zh">架构对齐 & 机柜验证</span>
+                            <span class="lang-en">Architecture Alignment</span>
                         </h3>
-                      </div>
-                      <ul className="space-y-4">
-                        {step.items.map((li, i) => (
-                          <li
-                            key={i}
-                            className="flex items-start gap-3 text-sm text-gray-300"
-                          >
-                            <div className="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
-                            <span className="leading-snug">{li}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="hidden md:block absolute top-1/2 -right-6 w-12 h-12 bg-[#404040] rotate-45 border-t border-r border-gray-600 z-10 group-hover:bg-[#4a4a4a] transition-colors"></div>
                     </div>
-                  ))}
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">ORv3 21" 接口定义</span><span class="lang-en">ORv3 21" interface definition</span></span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">21"→19" 适配导轨验证</span><span class="lang-en">21"→19" adapter validation</span></span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">单柜级机械承载与 CFD</span><span class="lang-en">Mechanical & CFD validation</span></span>
+                        </li>
+                    </ul>
+                    <div class="hidden md:block absolute top-1/2 -right-6 w-12 h-12 bg-[#404040] rotate-45 border-t border-r border-gray-600 z-10 group-hover:bg-[#4a4a4a] transition-colors"></div>
                 </div>
-              </div>
-            </section>
 
-            {/* Technical Deep Dive */}
-            <section
-              id="technology"
-              className="py-24 bg-white"
-            >
-              <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-                <div className="grid lg:grid-cols-[1fr_2fr] gap-12">
-                  <div className="space-y-6">
-                    <h2 className="text-3xl font-bold text-[#333333]">
-                      {isZH ? "关键技术支柱" : "Key Technical Pillars"}
+                <!-- Phase 2 -->
+                <div class="relative bg-[#404040] p-10 border-r border-gray-600 last:border-0 hover:bg-[#4a4a4a] transition-colors group cursor-default">
+                    <div class="absolute top-0 left-0 bg-[#FF0000] text-white text-xs font-bold px-3 py-1">
+                        <span class="lang-zh">阶段 2</span><span class="lang-en">Phase 2</span>
+                    </div>
+                    <div class="mt-6 mb-6">
+                        <h3 class="text-xl font-bold group-hover:text-white text-gray-100 leading-tight">
+                            <span class="lang-zh">电气整合 & 3M 互连 PoC</span>
+                            <span class="lang-en">Integration & 3M PoC</span>
+                        </h3>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">33kW 电源架挂载 GPU</span><span class="lang-en">33kW shelf + GPU load</span></span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">TwinAx SI 与 EBO 盲插测试</span><span class="lang-en">TwinAx SI & EBO blind-mate</span></span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">RMU 功率-温度-误码率遥测</span><span class="lang-en">RMU telemetry closing the loop</span></span>
+                        </li>
+                    </ul>
+                    <div class="hidden md:block absolute top-1/2 -right-6 w-12 h-12 bg-[#404040] rotate-45 border-t border-r border-gray-600 z-10 group-hover:bg-[#4a4a4a] transition-colors"></div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative bg-[#404040] p-10 border-r border-gray-600 last:border-0 hover:bg-[#4a4a4a] transition-colors group cursor-default">
+                    <div class="absolute top-0 left-0 bg-[#FF0000] text-white text-xs font-bold px-3 py-1">
+                        <span class="lang-zh">阶段 3</span><span class="lang-en">Phase 3</span>
+                    </div>
+                    <div class="mt-6 mb-6">
+                        <h3 class="text-xl font-bold group-hover:text-white text-gray-100 leading-tight">
+                            <span class="lang-zh">标准化模组 & 交付</span>
+                            <span class="lang-en">Standardization & Rollout</span>
+                        </h3>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">ORv3 + 3M 互连一体化 BOM</span><span class="lang-en">Integrated BOM finalization</span></span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">新加坡 / 东南亚部署培训</span><span class="lang-en">SE Asia deployment training</span></span>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <div class="w-1.5 h-1.5 bg-[#FF0000] rounded-full mt-1.5 shrink-0"></div>
+                            <span class="leading-snug"><span class="lang-zh">OCP 社区参考设计认证</span><span class="lang-en">OCP Reference Design cert</span></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= TECHNOLOGY SECTION ================= -->
+    <section id="technology" class="py-24 bg-white">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-12">
+            <div class="grid lg:grid-cols-[1fr_2fr] gap-12">
+                <div class="space-y-6">
+                    <h2 class="text-3xl font-bold text-[#333333]">
+                        <span class="lang-zh">关键技术支柱</span><span class="lang-en">Key Technical Pillars</span>
                     </h2>
-                    <p className="text-gray-600 leading-relaxed">
-                      {isZH
-                        ? "报告从机械、电气与互连三大维度解构 ORv3 架构。点击右侧模块查看详细技术规格与测试报告。"
-                        : "The report dissects ORv3 across mechanical, electrical and interconnect dimensions. Explore the modules to view specs and reports."}
+                    <p class="text-gray-600 leading-relaxed">
+                        <span class="lang-zh">报告从机械、电气与互连三大维度解构 ORv3 架构。点击右侧模块查看详细技术规格与测试报告。</span>
+                        <span class="lang-en">The report dissects ORv3 across mechanical, electrical and interconnect dimensions. Explore the modules to view specs and reports.</span>
                     </p>
-                    <button className="text-[#FF0000] font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all uppercase tracking-wider">
-                      {isZH ? "浏览完整文档库" : "Browse Document Library"}
-                      <ChevronRightIcon className="w-4 h-4" />
+                    <button class="text-[#FF0000] font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all uppercase tracking-wider">
+                        <span class="lang-zh">浏览完整文档库</span><span class="lang-en">Browse Document Library</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                     </button>
-                  </div>
+                </div>
 
-                  <div className="grid sm:grid-cols-2 gap-6">
-                    {[
-                      {
-                        category: isZH ? "机械架构" : "Mechanical",
-                        title: isZH
-                          ? '21" ORv3 几何 + 适配'
-                          : '21" ORv3 Geometry',
-                        desc: isZH
-                          ? '重点验证 21" 与 19" 的空间差、OpenU 高度与 21→19 适配导轨在重载 GPU 柜下的形变控制。'
-                          : 'Focus on 21" vs 19" space delta, OpenU height, and adapter rail deflection under heavy GPU loads.',
-                      },
-                      {
-                        category: isZH ? "电气架构" : "Electrical",
-                        title: isZH
-                          ? "33kW 电源架 + 48V"
-                          : "33kW Power + 48V",
-                        desc: isZH
-                          ? "分析 N+1 冗余拓扑、I²R 损耗优势、BB1000 连接器接触电阻与热插拔安全。"
-                          : "Analyse N+1 redundancy, I²R loss benefits, BB1000 contact resistance & hot-swap safety.",
-                      },
-                      {
-                        category: isZH ? "3M 互连" : "3M Interconnect",
-                        title: isZH ? "TwinAx + EBO 风道" : "TwinAx + EBO Paths",
-                        desc: isZH
-                          ? "围绕 TwinAx 弯曲半径、阻抗连续性，结合 EBO 正压防尘与等电位接地网络。"
-                          : "Target TwinAx bend radius, impedance continuity, plus EBO positive-pressure dust control.",
-                      },
-                    ].map((tech, i) => (
-                      <article
-                        key={i}
-                        className="border border-gray-200 p-6 hover:shadow-lg transition-shadow bg-gray-50 rounded-sm group cursor-pointer"
-                      >
-                        <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
-                          {tech.category}
+                <div class="grid sm:grid-cols-2 gap-6">
+                    <!-- Tech 1 -->
+                    <article class="border border-gray-200 p-6 hover:shadow-lg transition-shadow bg-gray-50 rounded-sm group cursor-pointer">
+                        <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
+                            <span class="lang-zh">机械架构</span><span class="lang-en">Mechanical</span>
                         </div>
-                        <h3 className="text-lg font-bold text-[#333333] mb-3 group-hover:text-[#FF0000] transition-colors">
-                          {tech.title}
+                        <h3 class="text-lg font-bold text-[#333333] mb-3 group-hover:text-[#FF0000] transition-colors">
+                            <span class="lang-zh">21" ORv3 几何 + 适配</span><span class="lang-en">21" ORv3 Geometry</span>
                         </h3>
-                        <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-                          {tech.desc}
+                        <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                            <span class="lang-zh">重点验证 21" 与 19" 的空间差、OpenU 高度与 21→19 适配导轨在重载 GPU 柜下的形变控制。</span>
+                            <span class="lang-en">Focus on 21" vs 19" space delta, OpenU height, and adapter rail deflection under heavy GPU loads.</span>
                         </p>
-                        <div className="flex justify-end">
-                          <FileTextIcon className="w-5 h-5 text-gray-400 group-hover:text-[#FF0000]" />
+                        <div class="flex justify-end">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 group-hover:text-[#FF0000]"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
                         </div>
-                      </article>
-                    ))}
-                  </div>
+                    </article>
+                    <!-- Tech 2 -->
+                    <article class="border border-gray-200 p-6 hover:shadow-lg transition-shadow bg-gray-50 rounded-sm group cursor-pointer">
+                        <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
+                            <span class="lang-zh">电气架构</span><span class="lang-en">Electrical</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-[#333333] mb-3 group-hover:text-[#FF0000] transition-colors">
+                            <span class="lang-zh">33kW 电源架 + 48V</span><span class="lang-en">33kW Power + 48V</span>
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                            <span class="lang-zh">分析 N+1 冗余拓扑、I²R 损耗优势、BB1000 连接器接触电阻与热插拔安全。</span>
+                            <span class="lang-en">Analyse N+1 redundancy, I²R loss benefits, BB1000 contact resistance & hot-swap safety.</span>
+                        </p>
+                        <div class="flex justify-end">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 group-hover:text-[#FF0000]"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+                        </div>
+                    </article>
+                    <!-- Tech 3 -->
+                    <article class="border border-gray-200 p-6 hover:shadow-lg transition-shadow bg-gray-50 rounded-sm group cursor-pointer">
+                        <div class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
+                            <span class="lang-zh">3M 互连</span><span class="lang-en">3M Interconnect</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-[#333333] mb-3 group-hover:text-[#FF0000] transition-colors">
+                            <span class="lang-zh">TwinAx + EBO 风道</span><span class="lang-en">TwinAx + EBO Paths</span>
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-relaxed">
+                            <span class="lang-zh">围绕 TwinAx 弯曲半径、阻抗连续性，结合 EBO 正压防尘与等电位接地网络。</span>
+                            <span class="lang-en">Target TwinAx bend radius, impedance continuity, plus EBO positive-pressure dust control.</span>
+                        </p>
+                        <div class="flex justify-end">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 group-hover:text-[#FF0000]"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+                        </div>
+                    </article>
                 </div>
-              </div>
-            </section>
+            </div>
+        </div>
+    </section>
 
-            {/* Video Showcase: 3 个视频 */}
-            <section
-              id="showcase"
-              className="bg-[#f2f2f2] py-24"
-            >
-              <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-                <div className="flex items-center justify-between mb-10">
-                  <div>
-                    <h2 className="text-3xl font-bold text-[#333333]">
-                      {isZH ? "整体方案与动画展示" : "Solution & Animation Showcase"}
+    <!-- ================= SHOWCASE (VIDEO) ================= -->
+    <section id="showcase" class="bg-[#f2f2f2] py-24">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-12">
+            <div class="flex items-center justify-between mb-10">
+                <div>
+                    <h2 class="text-3xl font-bold text-[#333333]">
+                        <span class="lang-zh">整体方案与动画展示</span><span class="lang-en">Solution & Animation Showcase</span>
                     </h2>
-                    <div className="w-16 h-1 bg-[#FF0000] mt-3"></div>
-                  </div>
-                  <a
-                    href="#"
-                    className="hidden md:flex text-[#FF0000] text-sm font-bold items-center gap-2 hover:gap-3 transition-all"
-                  >
-                    {isZH ? "查看所有视频" : "View All Videos"}
-                    <ArrowRightIcon className="w-4 h-4" />
-                  </a>
+                    <div class="w-16 h-1 bg-[#FF0000] mt-3"></div>
                 </div>
+                <a href="#" class="hidden md:flex text-[#FF0000] text-sm font-bold items-center gap-2 hover:gap-3 transition-all">
+                    <span class="lang-zh">查看所有视频</span><span class="lang-en">View All Videos</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
 
-                <div className="grid md:grid-cols-3 gap-8">
-                  {/* Video 1 - 项目总览 */}
-                  <div className="bg-white p-4 shadow-sm group">
-                    <div className="relative aspect-video bg-black mb-4 overflow-hidden">
-                      <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                        <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <PlayIcon className="w-6 h-6 text-[#FF0000] ml-1 fill-[#FF0000]" />
-                        </div>
-                      </div>
-                      <video
-                        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/3M_OCP_ORv3_Integration.mp4"
-                        className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
-                        controls
-                        type="video/mp4"
-                      ></video>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Video 1 -->
+                <div class="bg-white p-4 shadow-sm group">
+                    <div class="relative aspect-video bg-black mb-4 overflow-hidden">
+                        <video src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/3M_OCP_ORv3_Integration.mp4" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" controls type="video/mp4"></video>
                     </div>
-                    <h3 className="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
-                      {isZH ? "项目总览" : "Project Overview"}
+                    <h3 class="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
+                        <span class="lang-zh">项目总览</span><span class="lang-en">Project Overview</span>
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      {isZH
-                        ? "解释为何选择 ORv3 + 3M 方案，以及新加坡 / OCP 生态合作模式。"
-                        : "Explaining why ORv3 + 3M and the Singapore / OCP collaboration model."}
+                    <p class="text-sm text-gray-500">
+                        <span class="lang-zh">解释为何选择 ORv3 + 3M 方案，以及新加坡 / OCP 生态合作模式。</span>
+                        <span class="lang-en">Explaining why ORv3 + 3M and the Singapore / OCP collaboration model.</span>
                     </p>
-                  </div>
-
-                  {/* Video 2 - OCP Rack / Power / Cooling 动画 */}
-                  <div className="bg-white p-4 shadow-sm group">
-                    <div className="relative aspect-video bg-black mb-4 overflow-hidden">
-                      <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                        <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <PlayIcon className="w-6 h-6 text-[#FF0000] ml-1 fill-[#FF0000]" />
-                        </div>
-                      </div>
-                      <video
-                        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/The_New_Data_Center_Blueprint.mp4"
-                        className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
-                        controls
-                        type="video/mp4"
-                      ></video>
-                    </div>
-                    <h3 className="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
-                      {isZH
-                        ? "OCP Rack / Power / Cooling 动画"
-                        : "OCP Rack / Power / Cooling Animation"}
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      {isZH
-                        ? "展示 ORv3 机柜、电源架、液冷 / 风冷一体方案的动态演示，用于远程技术评审。"
-                        : "Dynamic walk-through of ORv3 racks, power shelves and cooling solution for remote technical review."}
-                    </p>
-                  </div>
-
-                  {/* Video 3 - Digital Twin / Blueprint */}
-                  <div className="bg-white p-4 shadow-sm group">
-                    <div className="relative aspect-video bg-black mb-4 overflow-hidden">
-                      <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                        <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <PlayIcon className="w-6 h-6 text-[#FF0000] ml-1 fill-[#FF0000]" />
-                        </div>
-                      </div>
-                      <video
-                        src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/The_New_Data_Center_Blueprint.mp4"
-                        className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700"
-                        controls
-                        type="video/mp4"
-                      ></video>
-                    </div>
-                    <h3 className="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
-                      {isZH
-                        ? "数据中心 Digital Twin 蓝图"
-                        : "Data Center Digital Twin Blueprint"}
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      {isZH
-                        ? "展示基于 NVIDIA Omniverse / Modulus 的数据中心数字孪生、CFD / FNM 联合仿真能力。"
-                        : "Shows a blueprint of data center digital twin using NVIDIA Omniverse / Modulus with CFD / FNM simulation."}
-                    </p>
-                  </div>
                 </div>
-              </div>
-            </section>
-
-            {/* Image Gallery with zoom */}
-            <section className="py-24 max-w-[1440px] mx-auto px-6 md:px-12">
-              <h2 className="text-2xl font-bold text-[#333333] mb-2">
-                {isZH ? "图像展示" : "Image Showcase"}
-              </h2>
-              <p className="text-sm text-gray-500 mb-6">
-                {isZH
-                  ? "点击任意图片或放大镜图标可以查看大图细节。"
-                  : "Click any image or zoom icon to view details in full size."}
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {galleryImages.map((img, i) => (
-                  <div
-                    key={i}
-                    className="group relative aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200 cursor-pointer"
-                    onClick={() => setZoomImage(img)}
-                  >
-                    <img
-                      src={img.src}
-                      alt={img.text}
-                      className="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
-                    />
-                    {/* 灰底文字 */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <span className="text-white text-sm font-bold">
-                        {img.text}
-                      </span>
+                <!-- Video 2 -->
+                <div class="bg-white p-4 shadow-sm group">
+                    <div class="relative aspect-video bg-black mb-4 overflow-hidden">
+                        <video src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/The_New_Data_Center_Blueprint.mp4" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" controls type="video/mp4"></video>
                     </div>
-                    {/* 放大镜图标 */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setZoomImage(img);
-                      }}
-                      className="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <SearchIcon className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Contact Section */}
-            <section className="bg-[#333333] text-white py-24 border-t-8 border-[#FF0000]">
-              <div className="max-w-[1000px] mx-auto px-6">
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl font-bold mb-4">
-                    {isZH
-                      ? "技术合作与联合方案对接"
-                      : "Technical Cooperation & Alignment"}
-                  </h2>
-                  <p className="text-gray-300 max-w-2xl mx-auto">
-                    {isZH
-                      ? "适用于服务器厂商、整机柜集成商、3M 渠道伙伴以及新加坡 / 东南亚数据中心业主。"
-                      : "For server vendors, rack integrators, 3M channel partners and DC owners in Singapore / SE Asia."}
-                  </p>
+                    <h3 class="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
+                        <span class="lang-zh">OCP Rack / Power / Cooling 动画</span><span class="lang-en">OCP Rack / Power / Cooling Animation</span>
+                    </h3>
+                    <p class="text-sm text-gray-500">
+                        <span class="lang-zh">展示 ORv3 机柜、电源架、液冷 / 风冷一体方案的动态演示，用于远程技术评审。</span>
+                        <span class="lang-en">Dynamic walk-through of ORv3 racks, power shelves and cooling solution for remote technical review.</span>
+                    </p>
                 </div>
+                <!-- Video 3 -->
+                <div class="bg-white p-4 shadow-sm group">
+                    <div class="relative aspect-video bg-black mb-4 overflow-hidden">
+                        <video src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/video/The_New_Data_Center_Blueprint.mp4" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" controls type="video/mp4"></video>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#333333] mb-2 group-hover:text-[#FF0000] transition-colors">
+                        <span class="lang-zh">数据中心 Digital Twin 蓝图</span><span class="lang-en">Data Center Digital Twin Blueprint</span>
+                    </h3>
+                    <p class="text-sm text-gray-500">
+                        <span class="lang-zh">展示基于 NVIDIA Omniverse / Modulus 的数据中心数字孪生、CFD / FNM 联合仿真能力。</span>
+                        <span class="lang-en">Shows a blueprint of data center digital twin using NVIDIA Omniverse / Modulus with CFD / FNM simulation.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                <div className="bg-white text-[#333333] rounded-sm p-8 md:p-12 shadow-2xl">
-                  <form
-                    className="space-y-6"
-                    onSubmit={(e) => e.preventDefault()}
-                  >
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">
-                          {isZH ? "姓名 / 公司" : "Name / Company"}
+    <!-- ================= IMAGE GALLERY ================= -->
+    <section class="py-24 max-w-[1440px] mx-auto px-6 md:px-12">
+        <h2 class="text-2xl font-bold text-[#333333] mb-2">
+            <span class="lang-zh">图像展示</span><span class="lang-en">Image Showcase</span>
+        </h2>
+        <p class="text-sm text-gray-500 mb-6">
+            <span class="lang-zh">点击任意图片或放大镜图标可以查看大图细节。</span><span class="lang-en">Click any image or zoom icon to view details in full size.</span>
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <!-- Image 1 -->
+            <div class="group relative aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200 cursor-pointer" onclick="openImage('https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/strucature.png', 'ORv3 机柜结构示意', 'ORv3 Rack Structure')">
+                <img src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/strucature.png" alt="ORv3" class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110" />
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <span class="text-white text-sm font-bold">
+                        <span class="lang-zh">ORv3 机柜结构示意</span><span class="lang-en">ORv3 Rack Structure</span>
+                    </span>
+                </div>
+                <button class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+            </div>
+            <!-- Image 2 -->
+            <div class="group relative aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200 cursor-pointer" onclick="openImage('https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Twinax.png', '48V 母排与 BB1000 + TwinAx', '48V Busbar with BB1000 + TwinAx')">
+                <img src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/Twinax.png" alt="Twinax" class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110" />
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <span class="text-white text-sm font-bold">
+                        <span class="lang-zh">48V 母排与 BB1000 + TwinAx</span><span class="lang-en">48V Busbar with BB1000 + TwinAx</span>
+                    </span>
+                </div>
+                <button class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+            </div>
+            <!-- Image 3 -->
+            <div class="group relative aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200 cursor-pointer" onclick="openImage('https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/EBO.png', '3M EBO 光模块', '3M EBO Optical Module')">
+                <img src="https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main/image/EBO.png" alt="EBO" class="absolute inset-0 w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110" />
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                    <span class="text-white text-sm font-bold">
+                        <span class="lang-zh">3M EBO 光模块</span><span class="lang-en">3M EBO Optical Module</span>
+                    </span>
+                </div>
+                <button class="absolute top-2 right-2 bg-black/60 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="bg-[#333333] text-white py-24 border-t-8 border-[#FF0000]">
+        <div class="max-w-[1000px] mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">
+                    <span class="lang-zh">技术合作与联合方案对接</span><span class="lang-en">Technical Cooperation & Alignment</span>
+                </h2>
+                <p class="text-gray-300 max-w-2xl mx-auto">
+                    <span class="lang-zh">适用于服务器厂商、整机柜集成商、3M 渠道伙伴以及新加坡 / 东南亚数据中心业主。</span>
+                    <span class="lang-en">For server vendors, rack integrators, 3M channel partners and DC owners in Singapore / SE Asia.</span>
+                </p>
+            </div>
+
+            <div class="bg-white text-[#333333] rounded-sm p-8 md:p-12 shadow-2xl">
+                <form class="space-y-6" onsubmit="event.preventDefault(); alert('Front-end Demo Only');">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase">
+                                <span class="lang-zh">姓名 / 公司</span><span class="lang-en">Name / Company</span>
+                            </label>
+                            <input class="w-full bg-gray-50 border-b-2 border-gray-200 px-3 py-3 outline-none focus:border-[#FF0000] transition-colors" placeholder="e.g. Alex · Server Vendor" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase">
+                                <span class="lang-zh">邮箱</span><span class="lang-en">Email</span>
+                            </label>
+                            <input type="email" class="w-full bg-gray-50 border-b-2 border-gray-200 px-3 py-3 outline-none focus:border-[#FF0000] transition-colors" placeholder="you@example.com" />
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-gray-500 uppercase">
+                            <span class="lang-zh">合作意向</span><span class="lang-en">Cooperation Interest</span>
                         </label>
-                        <input
-                          className="w-full bg-gray-50 border-b-2 border-gray-200 px-3 py-3 outline-none focus:border-[#FF0000] transition-colors"
-                          placeholder={
-                            isZH
-                              ? "如：张三 · 某服务器厂"
-                              : "e.g. Alex · Server Vendor"
-                          }
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-500 uppercase">
-                          {isZH ? "邮箱" : "Email"}
-                        </label>
-                        <input
-                          type="email"
-                          className="w-full bg-gray-50 border-b-2 border-gray-200 px-3 py-3 outline-none focus:border-[#FF0000] transition-colors"
-                          placeholder="you@example.com"
-                        />
-                      </div>
+                        <textarea rows="4" class="w-full bg-gray-50 border-b-2 border-gray-200 px-3 py-3 outline-none focus:border-[#FF0000] transition-colors"></textarea>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-gray-500 uppercase">
-                        {isZH ? "合作意向" : "Cooperation Interest"}
-                      </label>
-                      <textarea
-                        rows="4"
-                        className="w-full bg-gray-50 border-b-2 border-gray-200 px-3 py-3 outline-none focus:border-[#FF0000] transition-colors"
-                        placeholder={
-                          isZH
-                            ? "简要说明你的角色以及希望合作的方向（如 PoC、联合设计、区域代理等）。"
-                            : "Briefly describe your role and desired cooperation (PoC, co-design, etc.)."
-                        }
-                      ></textarea>
-                    </div>
-                    <button className="w-full bg-[#FF0000] hover:bg-[#d40000] text-white font-bold py-4 rounded-md text-[15px] uppercase tracking-wide transition-colors shadow-sm">
-                      {isZH ? "提交合作意向" : "Submit Interest"}
+                    <button class="w-full bg-[#FF0000] hover:bg-[#d40000] text-white font-bold py-4 rounded-md text-[15px] uppercase tracking-wide transition-colors shadow-sm">
+                        <span class="lang-zh">提交合作意向</span><span class="lang-en">Submit Interest</span>
                     </button>
-                    <p className="text-center text-xs text-gray-400 mt-4">
-                      {isZH
-                        ? "当前表单仅为前端示意。"
-                        : "This form is a front-end mock."}
-                    </p>
-                  </form>
+                </form>
 
-                  <div className="mt-8 grid md:grid-cols-3 gap-6 text-sm text-center border-t border-gray-100 pt-8">
-                    <div className="flex flex-col items-center gap-2">
-                      <MailIcon className="w-5 h-5 text-[#FF0000]" />
-                      <span className="font-bold text-[#333333]">
-                        info@dcdeeptech.com
-                      </span>
+                <div class="mt-8 grid md:grid-cols-3 gap-6 text-sm text-center border-t border-gray-100 pt-8">
+                    <div class="flex flex-col items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FF0000]"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <span class="font-bold text-[#333333]">info@dcdeeptech.com</span>
                     </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-5 h-5 flex items-center justify-center font-bold text-[#FF0000]">
-                        W
-                      </div>
-                      <span className="font-bold text-[#333333]">
-                        +65 8378 5068
-                      </span>
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="w-5 h-5 flex items-center justify-center font-bold text-[#FF0000]">W</div>
+                        <span class="font-bold text-[#333333]">+65 8378 5068</span>
                     </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <GlobeIcon className="w-5 h-5 text-[#FF0000]" />
-                      <span className="font-bold text-[#333333]">
-                        dcdeeptech.com
-                      </span>
+                    <div class="flex flex-col items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#FF0000]"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+                        <span class="font-bold text-[#333333]">dcdeeptech.com</span>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </section>
+            </div>
+        </div>
+    </section>
 
-            {/* Footer */}
-            <footer className="bg-[#1a1a1a] text-gray-400 py-12 border-t border-gray-800 text-xs">
-              <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
-                <div className="flex items-center gap-4">
-                  <span className="font-bold text-white text-lg">DCDT</span>
-                  <span className="border-l border-gray-600 pl-4">
-                    Science. Applied to Data Centers.
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-6 justify-center md:justify-end">
-                  <span>
-                    © {new Date().getFullYear()} DCDeepTech.{" "}
-                    {isZH ? "保留所有权利。" : "All rights reserved."}
-                  </span>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors"
-                  >
-                    {isZH ? "隐私政策" : "Privacy Policy"}
-                  </a>
-                  <a
-                    href="#"
-                    className="hover:text-white transition-colors"
-                  >
-                    {isZH ? "使用条款" : "Terms of Use"}
-                  </a>
-                </div>
-              </div>
-            </footer>
-          </div>
-        );
-      }
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-[#1a1a1a] text-gray-400 py-12 border-t border-gray-800 text-xs">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <span class="font-bold text-white text-lg">DCDT</span>
+                <span class="border-l border-gray-600 pl-4">Science. Applied to Data Centers.</span>
+            </div>
+            <div class="flex flex-wrap gap-6 justify-center md:justify-end">
+                <span>© 2024 DCDeepTech. <span class="lang-zh">保留所有权利。</span><span class="lang-en">All rights reserved.</span></span>
+                <a href="#" class="hover:text-white transition-colors"><span class="lang-zh">隐私政策</span><span class="lang-en">Privacy Policy</span></a>
+                <a href="#" class="hover:text-white transition-colors"><span class="lang-zh">使用条款</span><span class="lang-en">Terms of Use</span></a>
+            </div>
+        </div>
+    </footer>
 
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
+
+    <!-- ================= MODALS (HIDDEN BY DEFAULT) ================= -->
+
+    <!-- Feature Modal -->
+    <div id="feature-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in hidden" onclick="closeModal('feature-modal')">
+        <div class="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-sm shadow-2xl relative animate-slide-up" onclick="event.stopPropagation()">
+            <div class="absolute top-0 left-0 w-full h-2 bg-[#FF0000]"></div>
+            <button onclick="closeModal('feature-modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-[#FF0000] hover:bg-gray-100 rounded-full transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div class="p-8 md:p-10">
+                <div class="flex items-center gap-4 mb-6">
+                    <div id="fm-icon" class="w-16 h-16 bg-[#FF0000] text-white font-black flex items-center justify-center rounded-full text-lg shadow-md"></div>
+                    <div>
+                        <div id="fm-subtitle" class="text-xs font-bold text-gray-500 uppercase tracking-widest"></div>
+                        <h3 id="fm-title" class="text-2xl md:text-3xl font-bold text-[#333333] mt-1"></h3>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <p id="fm-desc" class="text-gray-600 leading-relaxed text-base md:text-lg"></p>
+                    <div class="bg-gray-50 border-l-4 border-[#FF0000] p-6">
+                        <h4 class="font-bold text-[#333333] mb-4 uppercase text-sm tracking-wide">
+                            <span class="lang-zh">关键技术规格</span><span class="lang-en">Key Specifications</span>
+                        </h4>
+                        <ul id="fm-specs" class="grid sm:grid-cols-2 gap-3 text-sm text-gray-700"></ul>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+                    <button onclick="closeModal('feature-modal')" class="bg-[#333333] hover:bg-black text-white px-6 py-2 rounded-sm font-bold text-sm transition-colors">
+                        <span class="lang-zh">关闭</span><span class="lang-en">Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Zoom Modal -->
+    <div id="image-modal" class="fixed inset-0 z-[90] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in p-4 hidden" onclick="closeModal('image-modal')">
+        <div class="relative max-w-5xl w-full max-h-[90vh] bg-black rounded-md overflow-hidden" onclick="event.stopPropagation()">
+            <button onclick="closeModal('image-modal')" class="absolute top-3 right-3 z-10 bg-black/60 text-white p-2 rounded-full hover:bg-black/80">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <img id="im-src" src="" alt="" class="w-full h-full object-contain bg-black" />
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-3">
+                <p id="im-text" class="text-sm text-white font-medium"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        // Data for Features
+        const featureData = {
+            mech: {
+                icon: '21"',
+                subtitle_zh: '21" ORv3 架构', subtitle_en: '21" ORv3 Architecture',
+                title_zh: "21英寸开放机架架构 (ORv3)", title_en: "21-inch Open Rack v3 Architecture",
+                desc_zh: '传统 19 英寸机柜内宽 450mm，而 OCP ORv3 21 英寸架构提供 538mm 内宽。这多出的 88mm 空间不仅仅是尺寸的增加，更是为高速 TwinAx 线缆提供了必要的弯曲半径空间，避免信号衰减。同时，ORv3 的 OpenU (OU) 高度为 48mm，略高于传统 RU 的 44.45mm，进一步优化了气流通道，使得高密度 GPU 服务器的散热效率提升 15% 以上。',
+                desc_en: "Traditional 19-inch racks have an inner width of 450mm, while OCP ORv3 21-inch architecture offers 538mm. This extra 88mm is critical for high-speed TwinAx cabling, providing the necessary bend radius to prevent signal attenuation. Additionally, the ORv3 OpenU (OU) height is 48mm, slightly taller than the traditional RU (44.45mm), optimizing airflow channels and improving cooling efficiency for high-density GPU servers by over 15%.",
+                specs_zh: ['内宽: 538mm (vs 19" 450mm)', "OU高度: 48mm (vs RU 44.45mm)", "散热效率提升: >15%", "兼容性: 提供 21转19 适配导轨"],
+                specs_en: ["Inner Width: 538mm (vs 450mm)", "OU Height: 48mm (vs 44.45mm)", "Cooling Efficiency: >15% boost", "Compatibility: 21-to-19 adapter rails available"]
+            },
+            elec: {
+                icon: '48V',
+                subtitle_zh: '48V Busbar 供电', subtitle_en: '48V Busbar Power',
+                title_zh: '48V 直流母排与高效供电', title_en: '48V DC Busbar & Power Efficiency',
+                desc_zh: '随着 AI 芯片功率激增，传统的 12V 配电架构面临巨大的 I²R 传输损耗。我们的方案采用 OCP ORv3 标准的 48V 直流母排（Busbar）架构，配合 33kW 高效电源架（Power Shelf）。将电压从 12V 提升至 48V，电流降低至原来的 1/4，传输损耗降低至 1/16。通过 BB1000 大电流盲插连接器，实现单一母排支持 100kW+ 机柜功率密度。',
+                desc_en: 'As AI chip power surges, traditional 12V distribution faces massive I²R transmission losses. Our solution adopts the OCP ORv3 standard 48V DC Busbar architecture, coupled with 33kW high-efficiency Power Shelves. Raising voltage from 12V to 48V reduces current to 1/4 and transmission losses to 1/16. Using BB1000 high-current blind-mate connectors, a single busbar supports 100kW+ rack power density.',
+                specs_zh: ["电压架构: 48V DC (损耗降低至 1/16)", "电源架: 33kW (N+1 冗余)", "连接器: BB1000 盲插", "支持功率密度: >100kW/柜"],
+                specs_en: ["Voltage: 48V DC (1/16th loss)", "Power Shelf: 33kW (N+1 Redundant)", "Connector: BB1000 Blind-mate", "Power Density: >100kW/Rack"]
+            },
+            inter: {
+                icon: 'EBO',
+                subtitle_zh: '3M™ EBO / TwinAx', subtitle_en: '3M™ EBO / TwinAx',
+                title_zh: '3M™ EBO 扩束光互连与 TwinAx', title_en: '3M™ EBO & TwinAx Interconnect',
+                desc_zh: '在 112G 和即将到来的 224G PAM4 时代，信号完整性（SI）至关重要。我们集成了 3M™ EBO（扩束光互连）技术，通过扩束透镜将光束截面扩大，使其对微尘的敏感度降低 100 倍以上，极大地提高了恶劣环境下的可靠性。结合机柜背部的盲插设计，运维人员无需接触脆弱的光纤端面即可完成服务器的互连维护。',
+                desc_en: 'In the era of 112G and upcoming 224G PAM4, Signal Integrity (SI) is paramount. We integrate 3M™ Expanded Beam Optical (EBO) technology, which expands the beam cross-section via lenses, making it over 100x less sensitive to dust. Combined with blind-mate designs at the rear of the rack, operators can maintain server interconnects without touching fragile fiber end-faces.',
+                specs_zh: ["技术: 3M™ Expanded Beam Optical (EBO)", "抗尘性: 敏感度降低 >100倍", "速率支持: 112G / 224G PAM4", "维护方式: 后端盲插，免清洁"],
+                specs_en: ["Tech: 3M™ Expanded Beam Optical (EBO)", "Dust Resistance: >100x improvement", "Speed: 112G / 224G PAM4", "Maintenance: Rear blind-mate, cleaning-free"]
+            }
+        };
+
+        // --- Logic ---
+
+        function toggleLanguage() {
+            document.body.classList.toggle('en-mode');
+        }
+
+        function toggleMobileMenu(show) {
+            const menu = document.getElementById('mobile-menu');
+            if (show) {
+                menu.classList.remove('hidden');
+                document.body.classList.add('modal-open');
+            } else {
+                menu.classList.add('hidden');
+                document.body.classList.remove('modal-open');
+            }
+        }
+
+        function openFeature(id) {
+            const data = featureData[id];
+            if (!data) return;
+
+            const isEn = document.body.classList.contains('en-mode');
+
+            // Populate Data
+            document.getElementById('fm-icon').innerText = data.icon;
+            
+            // We set both and let CSS hide one, BUT since this is dynamic JS injection,
+            // we need to inject the specific language text or structure HTML for both.
+            // Simplified approach: Clear content, create spans with classes.
+            
+            const setBilingual = (elementId, textZh, textEn) => {
+                const el = document.getElementById(elementId);
+                el.innerHTML = `<span class="lang-zh">${textZh}</span><span class="lang-en">${textEn}</span>`;
+            };
+
+            setBilingual('fm-subtitle', data.subtitle_zh, data.subtitle_en);
+            setBilingual('fm-title', data.title_zh, data.title_en);
+            setBilingual('fm-desc', data.desc_zh, data.desc_en);
+
+            const specsList = document.getElementById('fm-specs');
+            specsList.innerHTML = '';
+            
+            // Merge arrays for display loop (a bit hacky but works for this single file constraint)
+            // We will render ZH li items and EN li items, giving them classes
+            data.specs_zh.forEach(s => {
+                specsList.innerHTML += `<li class="flex items-start gap-2 lang-zh"><svg class="w-4 h-4 text-[#FF0000] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="font-medium">${s}</span></li>`;
+            });
+            data.specs_en.forEach(s => {
+                specsList.innerHTML += `<li class="flex items-start gap-2 lang-en"><svg class="w-4 h-4 text-[#FF0000] mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="font-medium">${s}</span></li>`;
+            });
+
+            // Show Modal
+            document.getElementById('feature-modal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function openImage(src, textZh, textEn) {
+            document.getElementById('im-src').src = src;
+            const el = document.getElementById('im-text');
+            el.innerHTML = `<span class="lang-zh">${textZh}</span><span class="lang-en">${textEn}</span>`;
+            
+            document.getElementById('image-modal').classList.remove('hidden');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            // Only remove modal-open if no other modals are open (simplified: just remove it)
+            document.body.classList.remove('modal-open');
+        }
     </script>
-  </body>
+</body>
 </html>

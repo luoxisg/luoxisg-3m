@@ -69,6 +69,9 @@
     <script type="text/babel">
       const { useState, useEffect } = React;
 
+      // Base URL for GitHub Raw Content
+      const REPO_URL = "https://raw.githubusercontent.com/luoxisg/luoxisg-3m/main";
+
       // --- Icons Components (Lucide React equivalent SVGs) ---
       const Icon = ({ children, className, ...props }) => (
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
@@ -234,7 +237,11 @@
                 <div className="flex items-center gap-8 h-full">
                   {/* Logo - Replaced Red Box with DCDeepTech Logo */}
                   <div className="h-full flex items-center -ml-4 md:ml-0 cursor-pointer">
-                    <img src="./image/DCdeeptech_logo.png" alt="DCDeepTech" className="h-12 w-auto object-contain" />
+                    <img 
+                      src={`${REPO_URL}/image/DCdeeptech_logo.png`} 
+                      alt="DCDeepTech" 
+                      className="h-12 w-auto object-contain" 
+                    />
                   </div>
                   
                   {/* Desktop Navigation */}
@@ -274,7 +281,7 @@
             {isMenuOpen && (
               <div className="fixed inset-0 z-[60] bg-white animate-fade-in">
                  <div className="flex justify-between items-center p-4 border-b border-gray-100">
-                    <img src="./image/DCdeeptech_logo.png" alt="DCDT" className="h-8 w-auto" />
+                    <img src={`${REPO_URL}/image/DCdeeptech_logo.png`} alt="DCDT" className="h-8 w-auto" />
                     <button onClick={() => setIsMenuOpen(false)}>
                        <XIcon className="w-8 h-8 text-[#333333]" />
                     </button>
@@ -314,7 +321,7 @@
                     
                     <div className="flex flex-wrap gap-4">
                        <a 
-                         href="./document/DCDT OCP vs 3M white paper.pdf" 
+                         href={`${REPO_URL}/document/DCDT%20OCP%20vs%203M%20white%20paper.pdf`}
                          target="_blank"
                          download="DCDT_OCP_vs_3M_white_paper.pdf"
                          className="bg-[#FF0000] hover:bg-[#d40000] text-white px-8 py-3 rounded-md font-bold text-[15px] flex items-center gap-2 transition-all shadow-md cursor-pointer decoration-0"
@@ -335,7 +342,7 @@
                      <div className="absolute top-0 bottom-0 -left-16 w-32 bg-[#f2f2f2] -skew-x-12 z-10 hidden md:block border-r-4 border-white"></div>
                      
                      <img 
-                       src="/image/strucature.png" 
+                       src={`${REPO_URL}/image/strucature.png`}
                        alt="OCP ORv3 Architecture"
                        className="w-full h-full object-cover mix-blend-multiply opacity-80"
                      />
@@ -540,7 +547,7 @@
                               </div>
                            </div>
                            <video 
-                             src="./video/3M_OCP_ORv3_Integration.mp4" 
+                             src={`${REPO_URL}/video/3M_OCP_ORv3_Integration.mp4`}
                              className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" 
                              controls 
                              type="video/mp4"
@@ -563,7 +570,7 @@
                               </div>
                            </div>
                            <video 
-                             src="./video/3M_OCP_ORv3_Integration.mp4" 
+                             src={`${REPO_URL}/video/3M_OCP_ORv3_Integration.mp4`} 
                              className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" 
                              controls 
                              type="video/mp4"
@@ -587,9 +594,9 @@
                </h2>
                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {[
-                     { src: "./image/Nvidia.png", text: isZH ? "ORv3 机柜正视图" : "ORv3 Rack Front View" },
-                     { src: "./image/Twinax.png", text: isZH ? "48V 母排与 BB1000" : "48V Busbar + BB1000" },
-                     { src: "./image/EBO.png", text: isZH ? "3M EBO 光模块" : "3M EBO Optical Module" }
+                     { src: `${REPO_URL}/image/Nvidia.png`, text: isZH ? "ORv3 机柜正视图" : "ORv3 Rack Front View" },
+                     { src: `${REPO_URL}/image/Twinax.png`, text: isZH ? "48V 母排与 BB1000" : "48V Busbar + BB1000" },
+                     { src: `${REPO_URL}/image/EBO.png`, text: isZH ? "3M EBO 光模块" : "3M EBO Optical Module" }
                   ].map((img, i) => (
                      <div key={i} className="group relative aspect-[4/3] bg-gray-100 overflow-hidden border border-gray-200">
                         <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">

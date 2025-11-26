@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCDeepTech x 3M | Global Strategic Master Plan</title>
+    
+    <!-- React 18 -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #f8f9fa; color: #1a1a1a; overflow-x: hidden; }
+        .font-data { font-family: 'Teko', sans-serif; }
+        .bg-3m-red { background-color: #EE1C25; }
+        .text-3m-red { color: #EE1C25; }
+        .border-3m-red { border-color: #EE1C25; }
+        
+        /* Animations */
+        .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(30px); }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Chart Animations */
+        .draw-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 2.5s ease-out forwards;
+        }
+        
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.05); }
+        .rack-19 { width: 190px; }
+        .rack-21 { width: 210px; }
+        .transition-width { transition: width 0.5s ease-in-out; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICONS ---
+        const Icons = {
+            Globe: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+            Server: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>,
+            Zap: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+            Wind: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/></svg>,
+            Check: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>,
+            Market: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>,
+            Chip: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>,
+            Cloud: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>,
+            TrendingUp: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        };
+
+        // --- CONTENT DICTIONARY ---
+        const CONTENT = {
+            zh: {
+                nav: { home: "主页", expertise: "工程能力", standard: "标准演进", demand: "生态需求", market: "商业模式", growth: "增长趋势" },
+                hero: {
+                    title: "OCP 生态的系统集成引擎",
+                    subtitle: "DCDeepTech 工程能力 + 3M 材料科学 = 下一代基础设施标准",
+                    desc: "我们不仅仅销售线缆。我们提供经过验证的 Open Rack v3 物理层解决方案，连接中国制造与全球 OCP Marketplace。",
+                    tag1: "JDM 联合设计",
+                    tag2: "OCP 成员企业"
+                },
+                expertise: {
+                    title: "DCDeepTech 核心工程能力",
+                    rack: {
+                        title: "机架集成 (Rack)",
+                        desc: "基于 Cheval/OCP 框架的 L10 级集成。熟练掌握 21英寸 Open Rack v3 机械结构，包括滑轨、侧板与盲插背板的公差控制。",
+                        points: ["ORv3 机械结构适配", "L10/L11 系统级组装", "Side Panel 线缆管理"]
+                    },
+                    power: {
+                        title: "电源系统 (Power)",
+                        desc: "深度整合 Delta 33kW Power Shelf。解决 48V 大电流母排 (Busbar) 与高速信号线的 EMI 干扰问题，提供定制化线束。",
+                        points: ["Delta 电源架整合", "48V Busbar 避让设计", "Murata RMU 遥测集成"]
+                    },
+                    cooling: {
+                        title: "热管理 (Cooling)",
+                        desc: "利用 3M TwinAx 的空气动力学特性优化风道。设计盲插式液冷分液管 (Manifold) 接口，适应混合冷却架构。",
+                        points: ["风道仿真 (CFD)", "液冷盲插接口设计", "风阻最小化布线"]
+                    }
+                },
+                standard: {
+                    title: "标准之争：为何是 21 英寸?",
+                    subtitle: "以及 3M 材料如何反向定义标准",
+                    legacy: "传统 EIA 19 英寸",
+                    modern: "OCP 21 英寸 (ORv3)",
+                    impact: "3M 的深度绑定效应",
+                    impactDesc: "为了在 21\" 架构中实现 100kW+ 密度，普通的线缆无法弯折，普通的光口无法抗尘。OCP 标准的物理极限正在被 3M 的材料特性（死折铜缆、扩束透镜）所拓宽。未来的 OCP 规范将越来越多地基于这些'使能材料'来编写。",
+                    data19: ["17.5\" (狭窄)", "独立电源 (PSU) 占用空间", "线缆阻挡风道"],
+                    data21: ["21\" (宽敞 +15%)", "集中母排 (Busbar) 供电", "3M 线缆隐形布线"]
+                },
+                demand: {
+                    title: "全球生态需求图谱",
+                    subtitle: "从 OCP 创始成员到亚洲未来浪潮",
+                    founders: "Tier 1: 创始成员与算力霸主",
+                    founders_desc: "定义规则的超大规模厂商",
+                    future: "Tier 2: 亚洲巨头与未来市场",
+                    future_desc: "BAT (字节/阿里/腾讯) 的下一步",
+                    clients: {
+                        meta: { name: "Meta", need: "极致气流 (Airflow)", desc: "作为 ORv3 制定者，要求线缆完全隐形，不阻挡 100kW 风道。" },
+                        msft: { name: "Microsoft", need: "液冷空间 (Space)", desc: "Project Olympus 及其液冷迭代，需要可死折线缆穿梭于冷板之间。" },
+                        google: { name: "Google", need: "48V 能效 (Efficiency)", desc: "作为 48V 架构先驱，需要极低损耗的母排与线缆连接。" },
+                        aws: { name: "AWS", need: "极端抗尘 (Dust)", desc: "沙漠/干燥地区数据中心，必需 EBO 扩束透镜以降低运维成本。" },
+                        nvidia: { name: "Nvidia", need: "信号密度 (Density)", desc: "NVL72 架构核心：用铜缆背板取代 PCB，实现 GPU 间极速互连。" },
+                        bat: { name: "BAT (字节/阿里/腾讯)", need: "安全供应链 + 性能", desc: "需求：对标 OCP 的高性能，但需要供应链安全。方案：新加坡联合工作室作为中立接口，输出 ORv3 级设计，规避地缘风险。" }
+                    }
+                },
+                market: {
+                    title: "OCP Marketplace 商业飞轮",
+                    step1: "设计与 Spec-In",
+                    desc1: "在联合实验室基于 OCP 规范开发参考设计。让 3M 材料成为'推荐组件'。",
+                    step2: "会员生态推广",
+                    desc2: "通过 OCP 峰会与工作组，向其他会员 (Meta, Wiwynn) 展示方案。",
+                    step3: "Marketplace 交易",
+                    desc3: "作为 OCP Solution Provider，在官方 Marketplace 上架互连套件，实现 B2B 批量销售。"
+                },
+                financial: {
+                    title: "全球硬件增长趋势对比",
+                    subtitle: "互连组件(Interconnect) 将跑赢通用硬件大盘",
+                    yAxis: "相对增长率 / 价值贡献",
+                    legend1: "全球 OCP 硬件市场基线 (CAGR ~15%)",
+                    legend2: "DCDeepTech AI 互连 (指数级增长)",
+                    stages: ["种子期 (Spec-In)", "爬坡期 (Sub-System)", "平台期 (Turnkey)"],
+                    note: "随着算力密度突破 100kW/柜，高端互连组件的价值量占比将从 2% 跃升至 6%+，实现超额收益。"
+                }
+            },
+            en: {
+                nav: { home: "Home", expertise: "Expertise", standard: "Standards", demand: "Demand", market: "Business Model", growth: "Growth" },
+                hero: {
+                    title: "System Integration Engine for OCP",
+                    subtitle: "DCDeepTech Engineering + 3M Material Science = Next Gen Infrastructure",
+                    desc: "We don't just sell cables. We deliver validated Open Rack v3 physical layer solutions, bridging Chinese manufacturing with the Global OCP Marketplace.",
+                    tag1: "JDM Strategy",
+                    tag2: "OCP Member"
+                },
+                expertise: {
+                    title: "DCDeepTech Core Engineering",
+                    rack: {
+                        title: "Rack Integration",
+                        desc: "L10 integration based on Cheval/OCP frames. Mastering ORv3 mechanical structures including rails, side panels, and blind-mate tolerance control.",
+                        points: ["ORv3 Structure Adaptation", "L10/L11 System Assembly", "Side Panel Cable Mgmt"]
+                    },
+                    power: {
+                        title: "Power Systems",
+                        desc: "Deep integration of Delta 33kW Power Shelves. Solving EMI issues between 48V Busbars and high-speed signals with custom harnesses.",
+                        points: ["Delta Power Shelf Integration", "48V Busbar Routing", "Murata RMU Telemetry"]
+                    },
+                    cooling: {
+                        title: "Thermal & Cooling",
+                        desc: "Optimizing airflow via 3M TwinAx aerodynamics. Designing blind-mate interfaces for liquid cooling manifolds in hybrid architectures.",
+                        points: ["CFD Simulation", "Liquid Cooling Interfaces", "Aerodynamic Cabling"]
+                    }
+                },
+                standard: {
+                    title: "The Battle of Standards: Why 21-inch?",
+                    subtitle: "And how 3M Materials are Defining the Future",
+                    legacy: "Legacy EIA 19-inch",
+                    modern: "OCP 21-inch (ORv3)",
+                    impact: "The 3M 'Lock-in' Effect",
+                    impactDesc: "To achieve 100kW+ density in 21\" racks, standard cables can't fold, and standard optics fail with dust. OCP physical limits are being extended by 3M materials. Future OCP specs are increasingly written around these 'enabling materials'.",
+                    data19: ["17.5\" (Narrow)", "Individual PSU (Wasted Space)", "Cables Block Airflow"],
+                    data21: ["21\" (Wide +15%)", "Centralized Busbar", "3M Invisible Cabling"]
+                },
+                demand: {
+                    title: "Global Ecosystem Demand",
+                    subtitle: "From OCP Founders to the Asian Future Wave",
+                    founders: "Tier 1: Founders & Compute Leaders",
+                    founders_desc: "The Hyperscalers Defining the Rules",
+                    future: "Tier 2: The Future Wave (Asia)",
+                    future_desc: "What BAT (ByteDance/Ali/Tencent) Need Next",
+                    clients: {
+                        meta: { name: "Meta", need: "Extreme Airflow", desc: "As ORv3 author, requires fully invisible cabling that doesn't block 100kW airflow." },
+                        msft: { name: "Microsoft", need: "Liquid Cooling Space", desc: "Project Olympus needs 'dead-fold' cables to weave between cold plates." },
+                        google: { name: "Google", need: "48V Efficiency", desc: "Pioneers of 48V, needing low-loss busbar connections and EMI shielding." },
+                        aws: { name: "AWS", need: "Dust Resilience", desc: "Dry/Desert regions require EBO lenses to lower OpEx and cleaning costs." },
+                        nvidia: { name: "Nvidia", need: "Signal Density", desc: "NVL72 Core: Replacing PCB traces with dense copper backplanes for GPU speed." },
+                        bat: { name: "BAT (ByteDance/Ali/Tencent)", need: "Secure Supply + Perf.", desc: "Need: OCP-level performance but sovereign supply chain. Solution: SG Joint Studio provides neutral access to ORv3 designs." }
+                    }
+                },
+                market: {
+                    title: "The OCP Marketplace Flywheel",
+                    step1: "Design & Spec-In",
+                    desc1: "Develop reference designs in the Joint Lab. Make 3M materials the 'Recommended Component'.",
+                    step2: "Member Promotion",
+                    desc2: "Showcase to peers (Meta, Wiwynn) via OCP Summits & Working Groups.",
+                    step3: "Marketplace Sales",
+                    desc3: "List interconnection kits on the official OCP Marketplace as a Solution Provider for B2B scale."
+                },
+                financial: {
+                    title: "Global Growth Trend Comparison",
+                    subtitle: "Interconnects Outperforming General Hardware",
+                    yAxis: "Relative Growth / Value Contribution",
+                    legend1: "Global OCP Hardware Baseline (CAGR ~15%)",
+                    legend2: "DCDeepTech AI Interconnect (Exponential)",
+                    stages: ["Seed (Spec-In)", "Ramp (Sub-System)", "Platform (Turnkey)"],
+                    note: "As compute density breaks 100kW/rack, interconnect value share jumps from 2% to 6%+, delivering alpha returns."
+                }
+            }
+        };
+
+        // --- COMPONENTS ---
+
+        const Navbar = ({ lang, setLang, t }) => (
+            <nav className="fixed w-full z-50 bg-white/95 backdrop-blur shadow-sm border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-20">
+                    <div className="flex items-center space-x-4">
+                        <div className="flex flex-col leading-none">
+                            <span className="text-3m-red font-black text-2xl tracking-tighter">DCDeepTech</span>
+                            <span className="text-gray-500 text-[10px] font-bold tracking-widest uppercase">Joint Design Studio</span>
+                        </div>
+                        <div className="h-8 w-px bg-gray-300 mx-2 hidden md:block"></div>
+                        <div className="text-3m-red font-bold text-xl hidden md:block">3M <span className="text-black text-xs font-normal ml-1">Science.</span></div>
+                    </div>
+                    <div className="hidden lg:flex space-x-6 text-sm font-bold text-gray-600 uppercase tracking-wider">
+                        <a href="#expertise" className="hover:text-3m-red transition">{t.nav.expertise}</a>
+                        <a href="#standard" className="hover:text-3m-red transition">{t.nav.standard}</a>
+                        <a href="#demand" className="hover:text-3m-red transition">{t.nav.demand}</a>
+                        <a href="#growth" className="hover:text-3m-red transition">{t.nav.growth}</a>
+                    </div>
+                    <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')} className="flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-full font-bold text-sm text-gray-700 hover:bg-gray-200">
+                        <Icons.Globe />
+                        <span>{lang === 'zh' ? 'EN' : '中文'}</span>
+                    </button>
+                </div>
+            </nav>
+        );
+
+        const Hero = ({ t }) => (
+            <section className="pt-32 pb-20 bg-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-gray-50 transform skew-x-12 translate-x-32 z-0"></div>
+                <div className="max-w-7xl mx-auto px-4 relative z-10">
+                    <div className="flex flex-col md:flex-row items-center">
+                        <div className="md:w-3/5 fade-in-up">
+                            <div className="flex space-x-2 mb-6">
+                                <span className="bg-3m-red text-white px-3 py-1 rounded text-xs font-bold tracking-widest uppercase">{t.hero.tag1}</span>
+                                <span className="bg-black text-white px-3 py-1 rounded text-xs font-bold tracking-widest uppercase">{t.hero.tag2}</span>
+                            </div>
+                            <h1 className="text-5xl md:text-6xl font-black text-gray-900 leading-tight mb-6">{t.hero.title}</h1>
+                            <h2 className="text-2xl text-gray-500 font-light mb-8">{t.hero.subtitle}</h2>
+                            <p className="text-gray-600 text-lg max-w-xl mb-10 leading-relaxed border-l-4 border-3m-red pl-4">{t.hero.desc}</p>
+                        </div>
+                        <div className="md:w-2/5 flex justify-center fade-in-up delay-200">
+                            <div className="relative w-72 h-72">
+                                <div className="absolute inset-0 bg-gray-900 rounded-xl transform rotate-3 shadow-2xl z-10 flex flex-col items-center justify-center text-white border-2 border-3m-red">
+                                    <div className="text-4xl font-black mb-2">OCP</div>
+                                    <div className="text-sm uppercase tracking-widest">Marketplace</div>
+                                </div>
+                                <div className="absolute inset-0 bg-gray-100 rounded-xl transform -rotate-6 shadow-lg z-0 flex items-center justify-center opacity-80"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Expertise = ({ t }) => (
+            <section id="expertise" className="py-20 bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-black text-gray-900">{t.expertise.title}</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {['rack', 'power', 'cooling'].map((item, idx) => (
+                            <div key={idx} className={`glass-panel p-8 rounded-xl hover:shadow-xl transition-all duration-300 group border-t-4 ${idx===0 ? 'border-gray-900' : idx===1 ? 'border-3m-red' : 'border-blue-500'}`}>
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-6 transition-colors ${idx===0 ? 'bg-gray-100 group-hover:bg-gray-900 group-hover:text-white' : idx===1 ? 'bg-red-50 text-3m-red group-hover:bg-3m-red group-hover:text-white' : 'bg-blue-50 text-blue-500 group-hover:bg-blue-500 group-hover:text-white'}`}>
+                                    {idx===0 ? <Icons.Server/> : idx===1 ? <Icons.Zap/> : <Icons.Wind/>}
+                                </div>
+                                <h3 className="text-2xl font-bold mb-4">{t.expertise[item].title}</h3>
+                                <p className="text-gray-600 text-sm mb-6 min-h-[80px]">{t.expertise[item].desc}</p>
+                                <ul className="space-y-2">
+                                    {t.expertise[item].points.map((p, i) => <li key={i} className="flex items-center text-xs font-bold text-gray-500 uppercase"><span className={`mr-2 ${idx===1 ? 'text-3m-red' : idx===2 ? 'text-blue-500' : 'text-gray-900'}`}>●</span> {p}</li>)}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+
+        const StandardComparison = ({ t }) => {
+            const [mode, setMode] = useState('21');
+            return (
+                <section id="standard" className="py-24 bg-white">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <h2 className="text-4xl font-black text-gray-900">{t.standard.title}</h2>
+                            <p className="text-xl text-3m-red font-medium mt-2">{t.standard.subtitle}</p>
+                        </div>
+                        <div className="flex flex-col lg:flex-row gap-16 items-center">
+                            <div className="w-full lg:w-1/2 flex flex-col items-center">
+                                <div className="flex bg-gray-100 p-1 rounded-lg mb-8">
+                                    <button onClick={() => setMode('19')} className={`px-6 py-2 rounded-md font-bold transition-all ${mode === '19' ? 'bg-white shadow text-gray-900' : 'text-gray-500'}`}>{t.standard.legacy}</button>
+                                    <button onClick={() => setMode('21')} className={`px-6 py-2 rounded-md font-bold transition-all ${mode === '21' ? 'bg-3m-red text-white shadow' : 'text-gray-500'}`}>{t.standard.modern}</button>
+                                </div>
+                                <div className="relative h-[400px] bg-gray-900 rounded-lg border-4 border-gray-700 flex flex-col items-center pt-8 transition-width duration-500" style={{width: mode === '21' ? '300px' : '260px'}}>
+                                    <div className="absolute top-0 left-0 right-0 bg-gray-800 h-8 text-center text-xs text-gray-400 py-2 border-b border-gray-600">
+                                        {mode === '21' ? 'Open Rack v3 (600mm)' : 'EIA Standard (482mm)'}
+                                    </div>
+                                    {mode === '21' ? (
+                                        <>
+                                            <div className="absolute right-4 top-10 bottom-10 w-4 bg-3m-red/80 rounded animate-pulse"></div>
+                                            <div className="w-[90%] h-12 bg-gray-700 mb-2 rounded border border-gray-600 flex items-center justify-center text-green-400 text-xs">Computing Node</div>
+                                            <div className="w-[90%] h-12 bg-gray-700 mb-2 rounded border border-gray-600 flex items-center justify-center text-green-400 text-xs">Computing Node</div>
+                                            <div className="w-[90%] h-24 bg-gray-800 mb-2 rounded border-2 border-3m-red flex items-center justify-center text-3m-red text-xs font-bold">Delta Power Shelf</div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="absolute right-2 top-10 bottom-10 w-2 bg-gray-600/50"></div>
+                                            <div className="w-[85%] h-16 bg-gray-700 mb-2 rounded border border-gray-600 flex flex-col items-center justify-center relative"><span className="text-gray-400 text-xs">Server</span><div className="absolute right-2 top-2 bottom-2 w-8 bg-gray-500 border border-gray-400 flex items-center justify-center text-[8px] text-black">PSU</div></div>
+                                            <div className="w-[85%] h-16 bg-gray-700 mb-2 rounded border border-gray-600 flex flex-col items-center justify-center relative"><span className="text-gray-400 text-xs">Server</span><div className="absolute right-2 top-2 bottom-2 w-8 bg-gray-500 border border-gray-400 flex items-center justify-center text-[8px] text-black">PSU</div></div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="w-full lg:w-1/2 space-y-8">
+                                <div className="bg-gray-50 p-6 rounded-xl border-l-4 border-3m-red">
+                                    <h3 className="font-bold text-xl mb-4">{t.standard.impact}</h3>
+                                    <p className="text-gray-600 leading-relaxed">{t.standard.impactDesc}</p>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="p-4 rounded border border-gray-200">
+                                        <div className="text-xs text-gray-500 uppercase font-bold mb-2">{t.standard.modern}</div>
+                                        <ul className="text-sm space-y-2">{t.standard.data21.map((item, i) => <li key={i} className="flex items-start"><Icons.Check/> <span className="ml-2 font-bold text-gray-800">{item}</span></li>)}</ul>
+                                    </div>
+                                    <div className="p-4 rounded border border-gray-200 bg-gray-100 opacity-60">
+                                        <div className="text-xs text-gray-500 uppercase font-bold mb-2">{t.standard.legacy}</div>
+                                        <ul className="text-sm space-y-2">{t.standard.data19.map((item, i) => <li key={i} className="flex items-start text-gray-500"><span className="mr-2">-</span> {item}</li>)}</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const EcosystemDemand = ({ t }) => (
+            <section id="demand" className="py-24 bg-gray-100 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 relative z-10">
+                    <div className="text-center mb-16">
+                        <span className="text-3m-red font-bold uppercase tracking-widest text-sm">Market Pull</span>
+                        <h2 className="text-4xl font-black text-gray-900 mt-2">{t.demand.title}</h2>
+                        <p className="text-gray-500 mt-2">{t.demand.subtitle}</p>
+                    </div>
+
+                    {/* Tier 1: Founders & Nvidia */}
+                    <div className="mb-16">
+                        <div className="flex items-center space-x-4 mb-8">
+                            <div className="bg-gray-900 text-white px-4 py-2 rounded-lg font-bold">{t.demand.founders}</div>
+                            <div className="h-px bg-gray-300 flex-1"></div>
+                            <div className="text-gray-500 text-sm">{t.demand.founders_desc}</div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            {[
+                                { ...t.demand.clients.meta, icon: <Icons.Cloud/>, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
+                                { ...t.demand.clients.msft, icon: <Icons.Cloud/>, color: "text-sky-600", bg: "bg-sky-50", border: "border-sky-200" },
+                                { ...t.demand.clients.aws, icon: <Icons.Cloud/>, color: "text-orange-500", bg: "bg-orange-50", border: "border-orange-200" },
+                                { ...t.demand.clients.google, icon: <Icons.Zap/>, color: "text-red-500", bg: "bg-red-50", border: "border-red-200" },
+                                { ...t.demand.clients.nvidia, icon: <Icons.Chip/>, color: "text-green-600", bg: "bg-green-50", border: "border-green-200" }
+                            ].map((client, i) => (
+                                <div key={i} className={`bg-white p-5 rounded-xl border ${client.border} hover:shadow-lg transition-all group`}>
+                                    <div className={`w-10 h-10 ${client.bg} ${client.color} rounded-full flex items-center justify-center mb-4`}>{client.icon}</div>
+                                    <h4 className="font-bold text-gray-900 mb-1">{client.name}</h4>
+                                    <div className={`text-xs font-bold ${client.color} uppercase mb-2`}>{client.need}</div>
+                                    <p className="text-xs text-gray-500 leading-relaxed">{client.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Tier 2: Future Wave (BAT) */}
+                    <div>
+                        <div className="flex items-center space-x-4 mb-8">
+                            <div className="bg-3m-red text-white px-4 py-2 rounded-lg font-bold">{t.demand.future}</div>
+                            <div className="h-px bg-gray-300 flex-1"></div>
+                            <div className="text-gray-500 text-sm">{t.demand.future_desc}</div>
+                        </div>
+                        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-8 text-white relative overflow-hidden">
+                             <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-3m-red opacity-10 transform -skew-x-12 translate-x-10"></div>
+                             <div className="flex flex-col md:flex-row items-center justify-between relative z-10">
+                                <div className="md:w-1/3 mb-6 md:mb-0">
+                                    <h3 className="text-2xl font-bold mb-2">{t.demand.clients.bat.name}</h3>
+                                    <div className="flex space-x-2">
+                                        <span className="bg-white/10 px-2 py-1 rounded text-xs">ByteDance</span>
+                                        <span className="bg-white/10 px-2 py-1 rounded text-xs">Alibaba</span>
+                                        <span className="bg-white/10 px-2 py-1 rounded text-xs">Tencent</span>
+                                    </div>
+                                </div>
+                                <div className="md:w-1/3 mb-6 md:mb-0 text-center">
+                                    <div className="text-sm text-gray-400 uppercase font-bold mb-1">Core Requirement</div>
+                                    <div className="text-xl font-bold text-3m-red">{t.demand.clients.bat.need}</div>
+                                </div>
+                                <div className="md:w-1/3 text-sm text-gray-300 border-l border-gray-600 pl-6">
+                                    {t.demand.clients.bat.desc}
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const MarketModel = ({ t }) => (
+            <section id="market" className="py-20 bg-gray-900 text-white">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between mb-16">
+                        <h2 className="text-4xl font-black">{t.market.title}</h2>
+                        <div className="flex items-center space-x-2 mt-4 md:mt-0 text-3m-red">
+                            <Icons.Market />
+                            <span className="font-bold uppercase tracking-widest">B2B Ecosystem</span>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                        <div className="hidden md:block absolute top-12 left-0 w-full h-1 bg-gray-700 z-0"></div>
+                        {[
+                            { step: "01", title: t.market.step1, desc: t.market.desc1 },
+                            { step: "02", title: t.market.step2, desc: t.market.desc2 },
+                            { step: "03", title: t.market.step3, desc: t.market.desc3 }
+                        ].map((item, i) => (
+                            <div key={i} className="relative z-10 bg-gray-800 p-8 rounded-xl border border-gray-700 hover:border-3m-red transition-colors">
+                                <div className="w-12 h-12 bg-gray-900 border-2 border-3m-red rounded-full flex items-center justify-center font-bold text-xl mb-6 shadow-lg">{item.step}</div>
+                                <h3 className="text-xl font-bold mb-4">{item.title}</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+
+        // --- ANIMATED FINANCIAL CHART ---
+        const FinancialGrowth = ({ t }) => {
+            const [animate, setAnimate] = useState(false);
+            const ref = useRef(null);
+
+            useEffect(() => {
+                const observer = new IntersectionObserver(
+                    ([entry]) => {
+                        if (entry.isIntersecting) {
+                            setAnimate(true);
+                        }
+                    },
+                    { threshold: 0.5 }
+                );
+                if (ref.current) observer.observe(ref.current);
+                return () => observer.disconnect();
+            }, []);
+
+            return (
+                <section id="growth" className="py-24 bg-gray-50" ref={ref}>
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-black text-gray-900">{t.financial.title}</h2>
+                            <p className="text-gray-500 mt-2">{t.financial.subtitle}</p>
+                        </div>
+
+                        <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                            <div className="relative h-[400px] w-full flex items-end px-8 pb-12 border-l-2 border-b-2 border-gray-300">
+                                
+                                {/* Y-Axis */}
+                                <div className="absolute -left-12 top-1/2 transform -rotate-90 text-xs font-bold text-gray-400 tracking-widest uppercase">{t.financial.yAxis}</div>
+
+                                {/* Chart Legend */}
+                                <div className="absolute top-4 left-8 bg-gray-50 p-4 rounded border border-gray-100 z-10">
+                                    <div className="flex items-center space-x-2 mb-2">
+                                        <div className="w-6 h-1 bg-3m-red"></div>
+                                        <span className="text-xs font-bold text-gray-700">{t.financial.legend2}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <div className="w-6 h-1 border-b-2 border-dashed border-blue-400"></div>
+                                        <span className="text-xs font-bold text-gray-500">{t.financial.legend1}</span>
+                                    </div>
+                                </div>
+
+                                {/* SVG Lines */}
+                                <svg className="absolute bottom-0 left-0 w-full h-full pointer-events-none overflow-visible" viewBox="0 0 1000 400" preserveAspectRatio="none">
+                                    
+                                    {/* Line 1: Global OCP Baseline (Linear Steady Growth) - Blue Dashed */}
+                                    <path 
+                                        d="M0,400 L1000,150" 
+                                        fill="none" 
+                                        stroke="#60A5FA" 
+                                        strokeWidth="3" 
+                                        strokeDasharray="10,5"
+                                        className={animate ? "draw-path" : "opacity-0"}
+                                    />
+
+                                    {/* Line 2: DCDeepTech AI Interconnect (Exponential J-Curve) - Red Solid */}
+                                    {/* Path: Starts flat, then shoots up sharply */}
+                                    <path 
+                                        d="M0,400 C300,390 600,350 1000,50" 
+                                        fill="none" 
+                                        stroke="#EE1C25" 
+                                        strokeWidth="5"
+                                        className={animate ? "draw-path" : "opacity-0"} 
+                                        style={{animationDelay: '0.5s'}}
+                                    />
+                                    
+                                    {/* Dot at the end of Red Line */}
+                                    {animate && <circle cx="1000" cy="50" r="8" fill="#EE1C25" className="animate-ping" style={{animationDelay: '2.5s'}} />}
+                                    {animate && <circle cx="1000" cy="50" r="5" fill="#EE1C25" style={{animationDelay: '2.5s'}} />}
+
+                                </svg>
+
+                                {/* X-Axis Labels */}
+                                <div className="flex justify-between w-full relative z-10 pt-4 border-t border-gray-200 mt-2 absolute bottom-0 left-0 px-8">
+                                    {t.financial.stages.map((stage, i) => (
+                                        <div key={i} className="text-center w-1/3 transform translate-y-8">
+                                            <div className="h-2 w-px bg-gray-300 mx-auto mb-1"></div>
+                                            <span className="text-sm font-bold text-gray-600 block">{stage}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mt-12 bg-gray-100 p-4 rounded text-center text-sm text-gray-600 italic">
+                                <Icons.TrendingUp /> "{t.financial.note}"
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const App = () => {
+            const [lang, setLang] = useState('zh');
+            const t = CONTENT[lang];
+            return (
+                <div className="antialiased">
+                    <Navbar lang={lang} setLang={setLang} t={t} />
+                    <Hero t={t} />
+                    <Expertise t={t} />
+                    <StandardComparison t={t} />
+                    <EcosystemDemand t={t} />
+                    <MarketModel t={t} />
+                    <FinancialGrowth t={t} />
+                    <footer className="bg-white border-t border-gray-200 py-12 text-center text-xs text-gray-500">
+                        <div className="max-w-7xl mx-auto px-4">
+                            <p className="font-bold text-gray-900 mb-2">DCDeepTech & 3M Joint Design Studio</p>
+                            <p>Singapore • Suzhou • Shanghai</p>
+                            <p className="mt-4 opacity-50">Confidential Strategy Document. Not for public distribution.</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

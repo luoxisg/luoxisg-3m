@@ -74,7 +74,9 @@
             Book: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
             Download: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>,
             ShieldCheck: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>,
-            Refresh: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Refresh: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>,
+            Droplet: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252zM6.252 8A8.014 8.014 0 0112 2.252V8H6.252zM2.252 12H8v5.748a8.014 8.014 0 01-5.748-5.748zM8 12h5.748a8.014 8.014 0 01-5.748 5.748V12z"/></svg>,
+            Mechanics: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         };
 
         // --- CONTENT DICTIONARY ---
@@ -205,6 +207,19 @@
                         "运维变革：从 '每次插拔必清洗' 到 '零接触维护' 的范式转移。"
                     ],
                     download: "下载完整版 v2.0 (PDF)"
+                },
+                whitepaperDetail: {
+                    title: "白皮书核心洞察 (Whitepaper Key Insights)",
+                    card1: {
+                        title: "热力学挑战：冷凝悖论",
+                        desc: "在裕廊岛的高湿热环境下，当较冷的 EBO 连接器遇到湿热空气，透镜间的空气隙 (Air Gap) 容易形成微液滴，导致米氏散射 (Mie Scattering) 和 >10dB 的信号损耗。",
+                        solution: "对策：采用 IP68 级气密封装 (Hermetic Sealing) 或内部充氮，配合露点管理策略。"
+                    },
+                    card2: {
+                        title: "机械架构：ORV3 浮动盲插",
+                        desc: "传统 19 英寸机架依赖手动插拔。在 OCP ORV3 21 英寸架构中，必须引入“弹簧加载浮动支架”以吸收 +/- 2.0mm 的制造与滑轨公差。",
+                        solution: "对策：开发 Server Sled Adapter，实现单手推入式 (Single-hand) 零线缆维护。"
+                    }
                 }
             },
             en: {
@@ -333,6 +348,19 @@
                         "Ops Revolution: From 'clean-every-mate' to 'zero-touch maintenance'."
                     ],
                     download: "Download Full v2.0 (PDF)"
+                },
+                whitepaperDetail: {
+                    title: "Whitepaper Key Insights",
+                    card1: {
+                        title: "Thermodynamic Challenge: The Condensation Paradox",
+                        desc: "In Jurong Island's high humidity, micro-droplets can form in EBO air gaps, causing Mie Scattering and >10dB loss.",
+                        solution: "Solution: IP68 Hermetic Sealing + Dew Point Management."
+                    },
+                    card2: {
+                        title: "Mechanical Architecture: ORV3 Floating Blind-mate",
+                        desc: "Standard 19\" racks need manual patching. OCP ORV3 21\" requires 'spring-loaded floating brackets' to absorb +/- 2.0mm tolerance.",
+                        solution: "Solution: Server Sled Adapter for single-hand, zero-cable maintenance."
+                    }
                 }
             }
         };
@@ -773,6 +801,41 @@
             </section>
         );
 
+        const WhitepaperDeepDive = ({ t }) => (
+            <section className="py-20 bg-gray-800 text-white border-t border-gray-700">
+                <div className="max-w-7xl mx-auto px-4">
+                    <h3 className="text-2xl font-black mb-12 text-center">{t.whitepaperDetail.title}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="bg-gray-700/50 p-8 rounded-xl border border-gray-600 hover:border-3m-red transition-colors group">
+                            <div className="flex items-center space-x-4 mb-6">
+                                <div className="p-3 bg-blue-900/50 rounded-full text-blue-400 group-hover:text-white transition-colors">
+                                    <Icons.Droplet />
+                                </div>
+                                <h4 className="text-xl font-bold">{t.whitepaperDetail.card1.title}</h4>
+                            </div>
+                            <p className="text-gray-300 leading-relaxed mb-4">{t.whitepaperDetail.card1.desc}</p>
+                            <div className="text-sm font-bold text-3m-red border-l-2 border-3m-red pl-3">
+                                {t.whitepaperDetail.card1.solution}
+                            </div>
+                        </div>
+
+                        <div className="bg-gray-700/50 p-8 rounded-xl border border-gray-600 hover:border-3m-red transition-colors group">
+                            <div className="flex items-center space-x-4 mb-6">
+                                <div className="p-3 bg-gray-600 rounded-full text-gray-300 group-hover:text-white transition-colors">
+                                    <Icons.Mechanics />
+                                </div>
+                                <h4 className="text-xl font-bold">{t.whitepaperDetail.card2.title}</h4>
+                            </div>
+                            <p className="text-gray-300 leading-relaxed mb-4">{t.whitepaperDetail.card2.desc}</p>
+                            <div className="text-sm font-bold text-3m-red border-l-2 border-3m-red pl-3">
+                                {t.whitepaperDetail.card2.solution}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
         const App = () => {
             const [lang, setLang] = useState('zh');
             const t = CONTENT[lang];
@@ -788,6 +851,7 @@
                     <ManufacturingShowcase t={t} />
                     <FinancialGrowth t={t} />
                     <Whitepaper t={t} />
+                    <WhitepaperDeepDive t={t} />
                     <footer className="bg-white border-t border-gray-200 py-12 text-center text-xs text-gray-500">
                         <div className="max-w-7xl mx-auto px-4">
                             <p className="font-bold text-gray-900 mb-2">DCDeepTech & 3M Joint Design Studio</p>

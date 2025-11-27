@@ -12,11 +12,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Teko:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Teko:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         body { font-family: 'Roboto', sans-serif; background-color: #f8f9fa; color: #1a1a1a; overflow-x: hidden; }
         .font-data { font-family: 'Teko', sans-serif; }
+        .font-serif { font-family: 'Noto Serif SC', serif; }
         .bg-3m-red { background-color: #EE1C25; }
         .text-3m-red { color: #EE1C25; }
         .border-3m-red { border-color: #EE1C25; }
@@ -69,13 +70,17 @@
             Layer: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>,
             Factory: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>,
             Cable: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>,
-            Tools: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>
+            Tools: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>,
+            Book: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>,
+            Download: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>,
+            ShieldCheck: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>,
+            Refresh: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         };
 
         // --- CONTENT DICTIONARY ---
         const CONTENT = {
             zh: {
-                nav: { home: "主页", expertise: "工程能力", tech: "技术参数", standard: "标准演进", demand: "生态需求", market: "商业模式", manufacturing: "智造平台", growth: "增长趋势" },
+                nav: { home: "主页", expertise: "工程能力", tech: "技术特点", standard: "标准演进", demand: "生态需求", market: "商业模式", manufacturing: "智造平台", whitepaper: "白皮书", growth: "增长趋势" },
                 hero: {
                     title: "OCP 生态的系统集成引擎",
                     subtitle: "DCDeepTech 工程能力 + 3M 材料科学 = 下一代基础设施标准",
@@ -101,28 +106,34 @@
                         points: ["风道仿真 (CFD)", "液冷盲插接口设计", "风阻最小化布线"]
                     }
                 },
-                techSpecs: {
-                    title: "技术特点深度解析",
-                    subtitle: "基于 3M 实验室数据的性能指标",
-                    tab1: "EBO 光学引擎",
-                    tab2: "TwinAx 铜互连",
-                    ebo: {
-                        headline: "3M™ EBO 扩束光互连技术",
-                        subhead: "无视灰尘，极致耐用",
-                        stat1: "9x", stat1_desc: "光束扩展 (9um → 80um)",
-                        stat2: "1000+", stat2_desc: "插拔寿命 (Delta IL < 0.1dB)",
-                        stat3: ">55dB", stat3_desc: "回波损耗 (单模)",
-                        desc: "EBO (Expanded Beam Optics) 通过微透镜阵列将光束直径扩大9倍，使灰尘遮挡的影响降至微乎其微。实测数据显示，在1000次插拔循环后，插入损耗变化量几乎为零，完美适配机器人盲插运维。",
-                        specs: ["12F 尺寸: 7.394 x 5.222 mm", "16F 尺寸: 8.392 x 6.423 mm", "插损(MM): < 0.3 dB", "插损(SM): < 0.7 dB"]
+                techFeatures: {
+                    title: "3M EBO 技术特点",
+                    subtitle: "重新定义光互连的可靠性标准",
+                    tab1: "抗尘原理",
+                    tab2: "耐久性测试",
+                    tab3: "关键指标",
+                    antiDust: {
+                        title: "光束扩展：灰尘免疫力",
+                        desc: "EBO 通过微透镜将光束模场直径（MFD）从 9um 扩展至 80um。相比传统 MPO 点对点接触，同样的灰尘颗粒在 EBO 扩束截面上的遮挡比例微乎其微。",
+                        point1: "扩斑尺寸: 80um (9x 扩展)",
+                        point2: "非接触式设计: 避免端面损伤",
+                        point3: "极低清洁需求: 适合恶劣环境"
                     },
-                    twinax: {
-                        headline: "3M™ TwinAx 扁平铜缆技术",
-                        subhead: "像折纸一样布线",
-                        stat1: "2.43mm", stat1_desc: "Fold Type A 厚度",
-                        stat2: "<2%", stat2_desc: "弯折阻抗变化率",
-                        stat3: "224G", stat3_desc: "PAM4 信号支持",
-                        desc: "不同于传统圆线，3M TwinAx 采用精密共挤工艺。独特的'死折' (Dead Fold) 能力允许线缆紧贴机箱侧壁或穿越狭窄的液冷缝隙，同时保持信号完整性。",
-                        specs: ["绝缘材料: 聚烯烃 (Polyolefin)", "导体: 30AWG 镀银铜", "结构: 扁平带状 (Ribbon)", "优势: 无风阻/高密度"]
+                    durability: {
+                        title: "1000次插拔无损耗",
+                        desc: "实验数据显示，3M LC Latch 连接器在互配 1000 次后，在没有任何清洁的状态下，插入损耗（IL）的变化量小于 0.1dB。样品完好无损。",
+                        point1: "测试条件: 1000次循环",
+                        point2: "IL 变化: < 0.1 dB",
+                        point3: "维护成本: 接近零"
+                    },
+                    metrics: {
+                        title: "性能参数 (12F/16F)",
+                        col1: "插入损耗 (IL)",
+                        col2: "回波损耗 (RL)",
+                        sm: "单模 (SM): < 0.7 dB",
+                        mm: "多模 (MM): < 0.3 dB",
+                        sm_rl: "单模: > 55 dB",
+                        mm_rl: "多模: > 35 dB"
                     }
                 },
                 standard: {
@@ -178,13 +189,26 @@
                     subtitle: "互连组件(Interconnect) 将跑赢通用硬件大盘",
                     yAxis: "相对增长率 / 价值贡献",
                     legend1: "全球 OCP 硬件市场基线 (CAGR ~15%)",
-                    legend2: "DCDeepTech AI 互连 (指数级增长)",
+                    legend2: "DCDeepTech AI Interconnect (指数级增长)",
                     stages: ["种子期 (Spec-In)", "爬坡期 (Sub-System)", "平台期 (Turnkey)"],
                     note: "随着算力密度突破 100kW/柜，高端互连组件的价值量占比将从 2% 跃升至 6%+，实现超额收益。"
+                },
+                whitepaper: {
+                    title: "技术白皮书 (Technical Whitepaper)",
+                    subtitle: "面向热带超大规模 AI 集群的扩束光学互连范式与 OCP ORV3 部署研究",
+                    abstract: "执行摘要 (Abstract)",
+                    abstract_text: "随着 NUS STDTC 2.0 迈入裕廊岛，双重极限挑战浮现：Nvidia Blackwell 带来的光互连密度激增，以及热带工业环境（高湿、盐雾、硫化物）对精密器件的侵蚀。本白皮书论证了 EBO 扩束光学替代传统 MPO 物理接触的必然性，并提出了针对冷凝效应（Condensation Paradox）的气密封装解决方案以及适应 OCP ORV3 的浮动盲插机械设计。",
+                    points: [
+                        "物理层挑战：MPO 接触式互连在高频插拔下的磨损与回损退化。",
+                        "环境适应性：针对裕廊岛盐雾与 SO₂ 环境的 IP68 级气密封装策略。",
+                        "OCP 部署：适用于 21 英寸机架的 '弹簧加载浮动盲插' 机构设计。",
+                        "运维变革：从 '每次插拔必清洗' 到 '零接触维护' 的范式转移。"
+                    ],
+                    download: "下载完整版 v2.0 (PDF)"
                 }
             },
             en: {
-                nav: { home: "Home", expertise: "Expertise", tech: "Tech Specs", standard: "Standards", demand: "Demand", market: "Business Model", manufacturing: "Manufacturing", growth: "Growth" },
+                nav: { home: "Home", expertise: "Expertise", tech: "Tech Features", standard: "Standards", demand: "Demand", market: "Business Model", manufacturing: "Manufacturing", whitepaper: "Whitepaper", growth: "Growth" },
                 hero: {
                     title: "System Integration Engine for OCP",
                     subtitle: "DCDeepTech Engineering + 3M Material Science = Next Gen Infrastructure",
@@ -210,28 +234,34 @@
                         points: ["CFD Simulation", "Liquid Cooling Interfaces", "Aerodynamic Cabling"]
                     }
                 },
-                techSpecs: {
-                    title: "Technical Deep Dive",
-                    subtitle: "Performance Metrics based on 3M Lab Data",
-                    tab1: "EBO Optical Engine",
-                    tab2: "TwinAx Copper",
-                    ebo: {
-                        headline: "3M™ EBO Expanded Beam Optics",
-                        subhead: "Dust Proof & Durable",
-                        stat1: "9x", stat1_desc: "Beam Expansion (9um → 80um)",
-                        stat2: "1000+", stat2_desc: "Mating Cycles (Delta IL < 0.1dB)",
-                        stat3: ">55dB", stat3_desc: "Return Loss (Single Mode)",
-                        desc: "EBO uses a micro-lens array to expand the beam diameter by 9x, making it virtually immune to dust blockage. Lab data shows near-zero insertion loss change after 1000 mating cycles, ideal for robotic maintenance.",
-                        specs: ["12F Size: 7.394 x 5.222 mm", "16F Size: 8.392 x 6.423 mm", "IL (MM): < 0.3 dB", "IL (SM): < 0.7 dB"]
+                techFeatures: {
+                    title: "3M EBO Technical Features",
+                    subtitle: "Redefining Reliability Standards for Optical Interconnects",
+                    tab1: "Anti-Dust",
+                    tab2: "Durability",
+                    tab3: "Key Metrics",
+                    antiDust: {
+                        title: "Beam Expansion: Dust Immunity",
+                        desc: "EBO expands the beam mode field diameter (MFD) from 9um to 80um via micro-lenses. Compared to MPO physical contact, dust particles block a negligible fraction of the expanded beam area.",
+                        point1: "Expansion Size: 80um (9x)",
+                        point2: "Non-Contact: No End-face Damage",
+                        point3: "Low Maintenance: Harsh Env Ready"
                     },
-                    twinax: {
-                        headline: "3M™ TwinAx Flat Copper",
-                        subhead: "Cable like Origami",
-                        stat1: "2.43mm", stat1_desc: "Fold Type A Thickness",
-                        stat2: "<2%", stat2_desc: "Impedance Variation",
-                        stat3: "224G", stat3_desc: "PAM4 Ready",
-                        desc: "Unlike round cables, 3M TwinAx uses precision co-extrusion. Its unique 'Dead Fold' capability allows cables to hug chassis walls or weave through tight liquid cooling gaps while maintaining signal integrity.",
-                        specs: ["Insulation: Polyolefin", "Conductor: 30AWG Silver Copper", "Structure: Flat Ribbon", "Benefit: No Airflow Blockage"]
+                    durability: {
+                        title: "Zero Loss after 1000 Mates",
+                        desc: "Lab data shows 3M LC Latch connectors maintain insertion loss (IL) variation < 0.1dB after 1000 mating cycles without cleaning. Samples remain intact.",
+                        point1: "Test Condition: 1000 Cycles",
+                        point2: "IL Change: < 0.1 dB",
+                        point3: "Maintenance Cost: Near Zero"
+                    },
+                    metrics: {
+                        title: "Performance Specs (12F/16F)",
+                        col1: "Insertion Loss (IL)",
+                        col2: "Return Loss (RL)",
+                        sm: "Single Mode (SM): < 0.7 dB",
+                        mm: "Multimode (MM): < 0.3 dB",
+                        sm_rl: "SM: > 55 dB",
+                        mm_rl: "MM: > 35 dB"
                     }
                 },
                 standard: {
@@ -290,6 +320,19 @@
                     legend2: "DCDeepTech AI Interconnect (Exponential)",
                     stages: ["Seed (Spec-In)", "Ramp (Sub-System)", "Platform (Turnkey)"],
                     note: "As compute density breaks 100kW/rack, interconnect value share jumps from 2% to 6%+, delivering alpha returns."
+                },
+                whitepaper: {
+                    title: "Technical Whitepaper",
+                    subtitle: "EBO Interconnect Paradigm & OCP ORV3 Deployment for Tropical Hyperscale AI Clusters",
+                    abstract: "Executive Summary",
+                    abstract_text: "As NUS STDTC 2.0 expands to Jurong Island, dual challenges emerge: Nvidia Blackwell's density spike and tropical industrial corrosion (Salt Spray/SO₂). This paper argues for the inevitable shift from MPO to EBO, proposing hermetic sealing against condensation and 'floating blind-mate' mechanisms for OCP ORV3 racks.",
+                    points: [
+                        "Physical Layer: EBO eliminates MPO wear & return loss degradation.",
+                        "Environment: IP68 hermetic sealing for Jurong Island's harsh air.",
+                        "OCP Deployment: Spring-loaded floating blind-mate design for ORV3.",
+                        "Ops Revolution: From 'clean-every-mate' to 'zero-touch maintenance'."
+                    ],
+                    download: "Download Full v2.0 (PDF)"
                 }
             }
         };
@@ -307,12 +350,11 @@
                         <div className="h-8 w-px bg-gray-300 mx-2 hidden md:block"></div>
                         <div className="text-3m-red font-bold text-xl hidden md:block">3M <span className="text-black text-xs font-normal ml-1">Science.</span></div>
                     </div>
-                    <div className="hidden lg:flex space-x-6 text-sm font-bold text-gray-600 uppercase tracking-wider">
-                        <a href="#expertise" className="hover:text-3m-red transition">{t.nav.expertise}</a>
+                    <div className="hidden lg:flex space-x-4 text-sm font-bold text-gray-600 uppercase tracking-wider">
                         <a href="#tech" className="hover:text-3m-red transition">{t.nav.tech}</a>
                         <a href="#market" className="hover:text-3m-red transition">{t.nav.market}</a>
                         <a href="#manufacturing" className="hover:text-3m-red transition text-3m-red">{t.nav.manufacturing}</a>
-                        <a href="#growth" className="hover:text-3m-red transition">{t.nav.growth}</a>
+                        <a href="#whitepaper" className="hover:text-3m-red transition">{t.nav.whitepaper}</a>
                     </div>
                     <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')} className="flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-full font-bold text-sm text-gray-700 hover:bg-gray-200">
                         <Icons.Globe />
@@ -350,177 +392,104 @@
             </section>
         );
 
-        const Expertise = ({ t }) => (
-            <section id="expertise" className="py-20 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-black text-gray-900">{t.expertise.title}</h2>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {['rack', 'power', 'cooling'].map((item, idx) => (
-                            <div key={idx} className={`glass-panel p-8 rounded-xl hover:shadow-xl transition-all duration-300 group border-t-4 ${idx===0 ? 'border-gray-900' : idx===1 ? 'border-3m-red' : 'border-blue-500'}`}>
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-6 transition-colors ${idx===0 ? 'bg-gray-100 group-hover:bg-gray-900 group-hover:text-white' : idx===1 ? 'bg-red-50 text-3m-red group-hover:bg-3m-red group-hover:text-white' : 'bg-blue-50 text-blue-500 group-hover:bg-blue-500 group-hover:text-white'}`}>
-                                    {idx===0 ? <Icons.Server/> : idx===1 ? <Icons.Zap/> : <Icons.Wind/>}
-                                </div>
-                                <h3 className="text-2xl font-bold mb-4">{t.expertise[item].title}</h3>
-                                <p className="text-gray-600 text-sm mb-6 min-h-[80px]">{t.expertise[item].desc}</p>
-                                <ul className="space-y-2">
-                                    {t.expertise[item].points.map((p, i) => <li key={i} className="flex items-center text-xs font-bold text-gray-500 uppercase"><span className={`mr-2 ${idx===1 ? 'text-3m-red' : idx===2 ? 'text-blue-500' : 'text-gray-900'}`}>●</span> {p}</li>)}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-        );
-
-        const TechSpecs = ({ t }) => {
-            const [tab, setTab] = useState('ebo');
-            const data = tab === 'ebo' ? t.techSpecs.ebo : t.techSpecs.twinax;
-
+        const TechFeatures = ({ t }) => {
+            const [tab, setTab] = useState('antiDust');
             return (
-                <section id="tech" className="py-24 bg-white relative">
+                <section id="tech" className="py-24 bg-white">
                     <div className="max-w-7xl mx-auto px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-4xl font-black text-gray-900">{t.techSpecs.title}</h2>
-                            <p className="text-gray-500 mt-2">{t.techSpecs.subtitle}</p>
+                        <div className="text-center mb-16">
+                            <span className="text-3m-red font-bold uppercase tracking-widest text-sm">PDF Insight</span>
+                            <h2 className="text-4xl font-black text-gray-900 mt-2">{t.techFeatures.title}</h2>
+                            <p className="text-gray-500 mt-2">{t.techFeatures.subtitle}</p>
                         </div>
 
-                        {/* Tabs */}
-                        <div className="flex justify-center mb-12 space-x-4">
-                            <button onClick={() => setTab('ebo')} className={`px-8 py-4 rounded-t-lg font-bold text-lg transition-all ${tab === 'ebo' ? 'tech-card-active shadow-lg' : 'tech-card-inactive'}`}>
-                                {t.techSpecs.tab1}
-                            </button>
-                            <button onClick={() => setTab('twinax')} className={`px-8 py-4 rounded-t-lg font-bold text-lg transition-all ${tab === 'twinax' ? 'tech-card-active shadow-lg' : 'tech-card-inactive'}`}>
-                                {t.techSpecs.tab2}
-                            </button>
-                        </div>
+                        <div className="flex flex-col md:flex-row gap-8 items-start">
+                            {/* Tabs */}
+                            <div className="md:w-1/4 space-y-2">
+                                {['antiDust', 'durability', 'metrics'].map((key, i) => (
+                                    <button 
+                                        key={i} 
+                                        onClick={() => setTab(key)}
+                                        className={`w-full text-left px-6 py-4 rounded-lg font-bold transition-all ${tab === key ? 'bg-3m-red text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                    >
+                                        {key === 'antiDust' ? t.techFeatures.tab1 : key === 'durability' ? t.techFeatures.tab2 : t.techFeatures.tab3}
+                                    </button>
+                                ))}
+                            </div>
 
-                        {/* Content Card */}
-                        <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
-                            {/* Visual Side */}
-                            <div className="md:w-1/2 bg-gray-900 p-12 flex items-center justify-center relative overflow-hidden">
-                                {tab === 'ebo' ? (
-                                    <div className="relative">
-                                        <div className="absolute inset-0 bg-blue-500 blur-[100px] opacity-20"></div>
-                                        <div className="relative z-10 w-64 h-32 bg-gray-800 border border-gray-600 rounded-lg flex items-center justify-center">
-                                            {/* Beam Animation */}
-                                            <div className="flex items-center space-x-2">
-                                                <div className="w-16 h-1 bg-blue-500"></div>
-                                                <div className="w-4 h-12 bg-blue-400 rounded-full opacity-50 blur-[1px]"></div>
-                                                <div className="w-24 h-12 bg-gradient-to-r from-blue-500/50 to-transparent" style={{clipPath: 'polygon(0 20%, 100% 0, 100% 100%, 0 80%)'}}></div>
-                                                <div className="w-2 h-2 bg-yellow-500 rounded-full animate-bounce"></div> 
-                                            </div>
-                                            <div className="absolute bottom-2 text-xs text-blue-400 font-mono">Beam Exp: 9x (Dust Immune)</div>
+                            {/* Content Area */}
+                            <div className="md:w-3/4 bg-gray-50 p-8 rounded-xl border border-gray-200 min-h-[400px]">
+                                {tab === 'antiDust' && (
+                                    <div className="fade-in-up">
+                                        <div className="flex items-center space-x-3 mb-6">
+                                            <div className="p-3 bg-3m-red/10 rounded-full text-3m-red"><Icons.ShieldCheck /></div>
+                                            <h3 className="text-2xl font-bold">{t.techFeatures.antiDust.title}</h3>
                                         </div>
+                                        <p className="text-gray-600 mb-8 leading-relaxed">{t.techFeatures.antiDust.desc}</p>
+                                        
+                                        {/* Visual */}
+                                        <div className="relative h-48 bg-gray-900 rounded-lg overflow-hidden flex items-center justify-center mb-8">
+                                            <div className="absolute left-10 w-2 h-20 bg-blue-500 opacity-50"></div>
+                                            <div className="absolute left-12 w-32 h-20 bg-gradient-to-r from-blue-500/30 to-transparent" style={{clipPath: 'polygon(0 45%, 100% 0, 100% 100%, 0 55%)'}}></div>
+                                            <div className="absolute left-32 w-2 h-2 bg-yellow-400 rounded-full animate-bounce z-10"></div>
+                                            <div className="text-white text-xs absolute bottom-2 right-2 font-mono">Beam Expansion Ratio: 9x</div>
+                                        </div>
+
+                                        <ul className="grid grid-cols-3 gap-4">
+                                            {[1,2,3].map(i => (
+                                                <li key={i} className="flex items-center text-sm font-bold text-gray-700">
+                                                    <Icons.Check /> <span className="ml-2">{t.techFeatures.antiDust[`point${i}`]}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
-                                ) : (
-                                    <div className="relative">
-                                        <div className="absolute inset-0 bg-red-500 blur-[100px] opacity-20"></div>
-                                        <div className="relative z-10 w-64 h-40 flex items-center justify-center">
-                                            {/* Fold Animation */}
-                                            <div className="w-full h-4 bg-gray-400 rounded relative">
-                                                <div className="absolute right-0 top-0 w-12 h-12 border-t-4 border-r-4 border-3m-red transform rotate-45 translate-x-4 -translate-y-4"></div>
+                                )}
+
+                                {tab === 'durability' && (
+                                    <div className="fade-in-up">
+                                        <div className="flex items-center space-x-3 mb-6">
+                                            <div className="p-3 bg-blue-100 rounded-full text-blue-600"><Icons.Refresh /></div>
+                                            <h3 className="text-2xl font-bold">{t.techFeatures.durability.title}</h3>
+                                        </div>
+                                        <p className="text-gray-600 mb-8 leading-relaxed">{t.techFeatures.durability.desc}</p>
+                                        
+                                        {/* Chart Simulation */}
+                                        <div className="h-48 bg-white border border-gray-200 rounded-lg p-4 relative mb-8">
+                                            <div className="absolute inset-0 flex items-end justify-between px-4 pb-4">
+                                                {[...Array(10)].map((_, i) => (
+                                                    <div key={i} className="w-2 bg-green-500 rounded-t" style={{height: '95%'}}></div>
+                                                ))}
                                             </div>
-                                            <div className="absolute bottom-0 text-xs text-red-400 font-mono">Dead Fold (Impedance &lt; 2%)</div>
+                                            <div className="absolute top-2 right-2 text-xs text-green-600 font-bold">Stable &lt; 0.1dB</div>
+                                        </div>
+
+                                        <ul className="grid grid-cols-3 gap-4">
+                                            {[1,2,3].map(i => (
+                                                <li key={i} className="flex items-center text-sm font-bold text-gray-700">
+                                                    <Icons.Check /> <span className="ml-2">{t.techFeatures.durability[`point${i}`]}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                {tab === 'metrics' && (
+                                    <div className="fade-in-up">
+                                        <h3 className="text-2xl font-bold mb-8">{t.techFeatures.metrics.title}</h3>
+                                        <div className="grid grid-cols-2 gap-8">
+                                            <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-3m-red">
+                                                <div className="text-sm text-gray-400 uppercase font-bold mb-2">{t.techFeatures.metrics.col1}</div>
+                                                <div className="text-lg font-bold text-gray-800 mb-1">{t.techFeatures.metrics.sm}</div>
+                                                <div className="text-lg font-bold text-gray-800">{t.techFeatures.metrics.mm}</div>
+                                            </div>
+                                            <div className="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
+                                                <div className="text-sm text-gray-400 uppercase font-bold mb-2">{t.techFeatures.metrics.col2}</div>
+                                                <div className="text-lg font-bold text-gray-800 mb-1">{t.techFeatures.metrics.sm_rl}</div>
+                                                <div className="text-lg font-bold text-gray-800">{t.techFeatures.metrics.mm_rl}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
-                            </div>
-
-                            {/* Data Side */}
-                            <div className="md:w-1/2 p-12">
-                                <div className="text-3m-red font-bold uppercase tracking-widest text-sm mb-2">3M Lab Verified</div>
-                                <h3 className="text-3xl font-black text-gray-900 mb-2">{data.headline}</h3>
-                                <div className="text-xl text-gray-500 mb-8 font-light">{data.subhead}</div>
-
-                                <div className="grid grid-cols-3 gap-6 mb-8">
-                                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                                        <div className="text-2xl font-black text-gray-900 font-data">{data.stat1}</div>
-                                        <div className="text-[10px] text-gray-500 uppercase mt-1">{data.stat1_desc}</div>
-                                    </div>
-                                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                                        <div className="text-2xl font-black text-3m-red font-data">{data.stat2}</div>
-                                        <div className="text-[10px] text-gray-500 uppercase mt-1">{data.stat2_desc}</div>
-                                    </div>
-                                    <div className="text-center p-4 bg-gray-50 rounded-lg">
-                                        <div className="text-2xl font-black text-gray-900 font-data">{data.stat3}</div>
-                                        <div className="text-[10px] text-gray-500 uppercase mt-1">{data.stat3_desc}</div>
-                                    </div>
-                                </div>
-
-                                <p className="text-gray-600 mb-8 leading-relaxed text-sm">
-                                    {data.desc}
-                                </p>
-
-                                <div className="bg-gray-50 p-4 rounded border border-gray-100">
-                                    <div className="text-xs font-bold text-gray-400 uppercase mb-2">Technical Specs</div>
-                                    <ul className="grid grid-cols-2 gap-2">
-                                        {data.specs.map((spec, i) => (
-                                            <li key={i} className="flex items-center text-xs text-gray-700">
-                                                <Icons.Microscope />
-                                                <span className="ml-2 font-mono">{spec}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            );
-        };
-
-        const StandardComparison = ({ t }) => {
-            const [mode, setMode] = useState('21');
-            return (
-                <section id="standard" className="py-24 bg-gray-50">
-                    <div className="max-w-7xl mx-auto px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-4xl font-black text-gray-900">{t.standard.title}</h2>
-                            <p className="text-xl text-3m-red font-medium mt-2">{t.standard.subtitle}</p>
-                        </div>
-                        <div className="flex flex-col lg:flex-row gap-16 items-center">
-                            <div className="w-full lg:w-1/2 flex flex-col items-center">
-                                <div className="flex bg-white p-1 rounded-lg mb-8 shadow-sm">
-                                    <button onClick={() => setMode('19')} className={`px-6 py-2 rounded-md font-bold transition-all ${mode === '19' ? 'bg-gray-100 shadow-inner text-gray-900' : 'text-gray-500'}`}>{t.standard.legacy}</button>
-                                    <button onClick={() => setMode('21')} className={`px-6 py-2 rounded-md font-bold transition-all ${mode === '21' ? 'bg-3m-red text-white shadow' : 'text-gray-500'}`}>{t.standard.modern}</button>
-                                </div>
-                                <div className="relative h-[400px] bg-gray-900 rounded-lg border-4 border-gray-700 flex flex-col items-center pt-8 transition-width duration-500 shadow-2xl" style={{width: mode === '21' ? '300px' : '260px'}}>
-                                    <div className="absolute top-0 left-0 right-0 bg-gray-800 h-8 text-center text-xs text-gray-400 py-2 border-b border-gray-600">
-                                        {mode === '21' ? 'Open Rack v3 (600mm)' : 'EIA Standard (482mm)'}
-                                    </div>
-                                    {mode === '21' ? (
-                                        <>
-                                            <div className="absolute right-4 top-10 bottom-10 w-4 bg-3m-red/80 rounded animate-pulse"></div>
-                                            <div className="w-[90%] h-12 bg-gray-700 mb-2 rounded border border-gray-600 flex items-center justify-center text-green-400 text-xs">Computing Node</div>
-                                            <div className="w-[90%] h-12 bg-gray-700 mb-2 rounded border border-gray-600 flex items-center justify-center text-green-400 text-xs">Computing Node</div>
-                                            <div className="w-[90%] h-24 bg-gray-800 mb-2 rounded border-2 border-3m-red flex items-center justify-center text-3m-red text-xs font-bold">Delta Power Shelf</div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="absolute right-2 top-10 bottom-10 w-2 bg-gray-600/50"></div>
-                                            <div className="w-[85%] h-16 bg-gray-700 mb-2 rounded border border-gray-600 flex flex-col items-center justify-center relative"><span className="text-gray-400 text-xs">Server</span><div className="absolute right-2 top-2 bottom-2 w-8 bg-gray-500 border border-gray-400 flex items-center justify-center text-[8px] text-black">PSU</div></div>
-                                            <div className="w-[85%] h-16 bg-gray-700 mb-2 rounded border border-gray-600 flex flex-col items-center justify-center relative"><span className="text-gray-400 text-xs">Server</span><div className="absolute right-2 top-2 bottom-2 w-8 bg-gray-500 border border-gray-400 flex items-center justify-center text-[8px] text-black">PSU</div></div>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="w-full lg:w-1/2 space-y-8">
-                                <div className="bg-white p-6 rounded-xl border-l-4 border-3m-red shadow-sm">
-                                    <h3 className="font-bold text-xl mb-4">{t.standard.impact}</h3>
-                                    <p className="text-gray-600 leading-relaxed">{t.standard.impactDesc}</p>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-4 rounded border border-gray-200 bg-white">
-                                        <div className="text-xs text-gray-500 uppercase font-bold mb-2">{t.standard.modern}</div>
-                                        <ul className="text-sm space-y-2">{t.standard.data21.map((item, i) => <li key={i} className="flex items-start"><Icons.Check/> <span className="ml-2 font-bold text-gray-800">{item}</span></li>)}</ul>
-                                    </div>
-                                    <div className="p-4 rounded border border-gray-200 bg-gray-100 opacity-60">
-                                        <div className="text-xs text-gray-500 uppercase font-bold mb-2">{t.standard.legacy}</div>
-                                        <ul className="text-sm space-y-2">{t.standard.data19.map((item, i) => <li key={i} className="flex items-start text-gray-500"><span className="mr-2">-</span> {item}</li>)}</ul>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -529,7 +498,7 @@
         };
 
         const EcosystemDemand = ({ t }) => (
-            <section id="demand" className="py-24 bg-white relative overflow-hidden">
+            <section id="demand" className="py-24 bg-gray-50 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 relative z-10">
                     <div className="text-center mb-16">
                         <span className="text-3m-red font-bold uppercase tracking-widest text-sm">Market Pull</span>
@@ -756,6 +725,54 @@
             );
         };
 
+        const Whitepaper = ({ t }) => (
+            <section id="whitepaper" className="py-20 bg-gray-900 text-white relative">
+                <div className="max-w-7xl mx-auto px-4">
+                    <div className="flex flex-col md:flex-row items-center justify-between">
+                        <div className="md:w-2/3 pr-8">
+                            <div className="flex items-center space-x-3 mb-6">
+                                <Icons.Book />
+                                <span className="font-bold uppercase tracking-widest text-3m-red">{t.whitepaper.title}</span>
+                            </div>
+                            <h2 className="text-3xl font-serif mb-6">{t.whitepaper.subtitle}</h2>
+                            
+                            <div className="bg-white/5 p-6 rounded-lg border border-white/10 mb-8">
+                                <h3 className="text-lg font-bold text-gray-300 mb-2">{t.whitepaper.abstract}</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed mb-4">{t.whitepaper.abstract_text}</p>
+                                <ul className="space-y-2">
+                                    {t.whitepaper.points.map((pt, i) => (
+                                        <li key={i} className="flex items-start text-sm text-gray-300">
+                                            <span className="text-3m-red mr-2">›</span> {pt}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <button className="flex items-center space-x-2 bg-3m-red hover:bg-red-700 text-white px-6 py-3 rounded font-bold transition-colors">
+                                <Icons.Download />
+                                <span>{t.whitepaper.download}</span>
+                            </button>
+                        </div>
+                        
+                        {/* Visual representation of a document */}
+                        <div className="md:w-1/3 mt-12 md:mt-0 flex justify-center">
+                            <div className="relative w-64 h-80 bg-white rounded shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 flex flex-col items-center justify-center p-8 text-gray-900 border-t-8 border-3m-red">
+                                <div className="text-center">
+                                    <div className="font-bold text-xl mb-1">DCDeepTech</div>
+                                    <div className="text-xs uppercase tracking-widest text-gray-500 mb-8">Technical Report v2.0</div>
+                                    <div className="font-serif text-lg leading-tight mb-4">EBO Paradigm Shift in Tropical AI Clusters</div>
+                                    <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto flex items-center justify-center">
+                                        <Icons.Microscope />
+                                    </div>
+                                </div>
+                                <div className="absolute bottom-4 right-4 text-[10px] text-gray-400">Confidential</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
         const App = () => {
             const [lang, setLang] = useState('zh');
             const t = CONTENT[lang];
@@ -764,12 +781,13 @@
                     <Navbar lang={lang} setLang={setLang} t={t} />
                     <Hero t={t} />
                     <Expertise t={t} />
-                    <TechSpecs t={t} />
+                    <TechFeatures t={t} />
                     <StandardComparison t={t} />
                     <EcosystemDemand t={t} />
                     <MarketModel t={t} />
                     <ManufacturingShowcase t={t} />
                     <FinancialGrowth t={t} />
+                    <Whitepaper t={t} />
                     <footer className="bg-white border-t border-gray-200 py-12 text-center text-xs text-gray-500">
                         <div className="max-w-7xl mx-auto px-4">
                             <p className="font-bold text-gray-900 mb-2">DCDeepTech & 3M Joint Design Studio</p>
